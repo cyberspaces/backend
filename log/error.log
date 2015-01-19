@@ -1,0 +1,3 @@
+2014-12-12 14:16:35 INFO  [finagle/netty3-1] request_access.createRequestLog(54) - {"ip":"127.0.0.1","method":{"name":"GET"},"url":"/bac"}
+2014-12-12 14:23:48 INFO  [finagle/netty3-1] request_access.createRequestLog(54) - {"method":"GET","ip":"127.0.0.1","url":"/","server_ip":"localhost","server_port":10006,"server_id":"ch_account_server1"}
+2014-12-12 14:23:49 INFO  [finagle/netty3-1] request_access.createRequestLog(54) - {"method":"GET","ip":"127.0.0.1","url":"/favicon.ico","server_ip":"localhost","server_port":10006,"server_id":"ch_account_server1"}
