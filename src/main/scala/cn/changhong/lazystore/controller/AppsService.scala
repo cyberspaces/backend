@@ -1,8 +1,7 @@
 package cn.changhong.lazystore.controller
 
 import cn.changhong.web.init.GlobalConfigFactory
-import cn.changhong.web.util.{RestResponseInlineCode, RestException, RestRequest}
-import com.twitter.finagle.http.Response
+import cn.changhong.web.util.{ResponseContent, RestResponseInlineCode, RestException, RestRequest}
 /**
    * Created by yangguo on 15-1-20.
 */
@@ -12,7 +11,7 @@ object AppsService {
   private[this] val request_key_max="m"
 
   private[controller] case class AppsRequest(var condition:Option[String],var start:Int,var max:Int)
-  def decoder(request:RestRequest):AppsRequest= {
+  private[this] def decoder(request:RestRequest):AppsRequest= {
     var temp = request.urlParams.all.get(request_key_start)
     val start =
       if (temp != null && temp.size() > 0) {
@@ -43,7 +42,9 @@ object AppsService {
    */
   object SpeityAppsService extends SpeityAppsService with BaseAopService
   private[controller] class SpeityAppsService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = {
+???
+    }
   }
 
   /**
@@ -52,7 +53,7 @@ object AppsService {
   object TopicAppsService extends TopicAppsService with BaseAopService
 
   private[controller] class TopicAppsService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = ???
   }
 
   /**
@@ -61,7 +62,7 @@ object AppsService {
   object HotTopApppsService extends HotTopApppsService with BaseAopService
 
   private[controller] class HotTopApppsService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = ???
   }
 
   /**
@@ -70,7 +71,7 @@ object AppsService {
   object TotalTopAppsService extends TotalTopAppsService with BaseAopService
 
   private[controller] class TotalTopAppsService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = ???
   }
 
   /**
@@ -79,7 +80,7 @@ object AppsService {
   object TagSpeityAppsService extends TagSpeityAppsService with BaseAopService
 
   private[controller] class TagSpeityAppsService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = ???
   }
 
   /**
@@ -88,7 +89,7 @@ object AppsService {
   object TagTopAppsService extends TagTopAppsService with BaseAopService
 
   private[controller] class TagTopAppsService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = ???
   }
 
   /**
@@ -97,7 +98,7 @@ object AppsService {
   object TagNewAppsService extends TagNewAppsService with BaseAopService
 
   private[controller] class TagNewAppsService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = ???
   }
 
   /**
@@ -106,7 +107,7 @@ object AppsService {
   object AppSimilarService extends AppSimilarService with BaseAopService
 
   private[controller] class AppSimilarService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = ???
   }
 
   /**
@@ -115,7 +116,7 @@ object AppsService {
   object SearchAppService extends SearchAppService with BaseAopService
 
   private[controller] class SearchAppService extends BaseService {
-    override def apply(request: RestRequest): Response = ???
+    override def apply(request: RestRequest): ResponseContent = ???
   }
 
 }

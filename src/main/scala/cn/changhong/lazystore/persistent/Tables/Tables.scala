@@ -14,7 +14,7 @@ object Tables {
   import scala.slick.jdbc.{GetResult => GR}
   
   /** DDL for all tables. Call .create to execute. */
-  lazy val ddl = AppApk.ddl ++ AppBase.ddl ++ AppCategory.ddl ++ AppComm.ddl ++ AppDevice.ddl ++ AppDeviceMap.ddl ++ AppDevInfo.ddl ++ AppInfo.ddl ++ AppStat.ddl ++ AppSubCategory.ddl ++ AppSubCatMap.ddl ++ AppSubjectBase.ddl ++ AppSubjectInfo1.ddl ++ AppSubjectInfo2.ddl ++ AppSubjectInfo3.ddl ++ AppSuggest.ddl ++ AppTypeKey.ddl ++ AppTypeName.ddl
+  lazy val ddl = AppApk.ddl ++ AppBase.ddl ++ AppCategory.ddl ++ AppComm.ddl ++ AppDevice.ddl ++ AppDeviceMap.ddl ++ AppDevInfo.ddl ++ AppInfo.ddl ++ AppRecommendSort.ddl ++ AppStat.ddl ++ AppSubCategory.ddl ++ AppSubCatMap.ddl ++ AppSubjectBase.ddl ++ AppSubjectInfo1.ddl ++ AppSubjectInfo2.ddl ++ AppSubjectInfo3.ddl ++ AppSuggest.ddl ++ AppTotalSort.ddl ++ AppTypeKey.ddl ++ AppTypeName.ddl
   
   /** Entity class storing rows of table AppApk
    *  @param apkId Database column apk_id DBType(INT), AutoInc, PrimaryKey
@@ -344,6 +344,32 @@ object Tables {
   /** Collection-like TableQuery object for table AppInfo */
   lazy val AppInfo = new TableQuery(tag => new AppInfo(tag))
   
+  /** Entity class storing rows of table AppRecommendSort
+   *  @param appVerId Database column app_ver_id DBType(INT)
+   *  @param recommendId Database column recommend_id DBType(INT) */
+  case class AppRecommendSortRow(appVerId: Int, recommendId: Int)
+  /** GetResult implicit for fetching AppRecommendSortRow objects using plain SQL queries */
+  implicit def GetResultAppRecommendSortRow(implicit e0: GR[Int]): GR[AppRecommendSortRow] = GR{
+    prs => import prs._
+    AppRecommendSortRow.tupled((<<[Int], <<[Int]))
+  }
+  /** Table description of table app_recommend_sort. Objects of this class serve as prototypes for rows in queries. */
+  class AppRecommendSort(_tableTag: Tag) extends Table[AppRecommendSortRow](_tableTag, "app_recommend_sort") {
+    def * = (appVerId, recommendId) <> (AppRecommendSortRow.tupled, AppRecommendSortRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (appVerId.?, recommendId.?).shaped.<>({r=>import r._; _1.map(_=> AppRecommendSortRow.tupled((_1.get, _2.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    
+    /** Database column app_ver_id DBType(INT) */
+    val appVerId: Column[Int] = column[Int]("app_ver_id")
+    /** Database column recommend_id DBType(INT) */
+    val recommendId: Column[Int] = column[Int]("recommend_id")
+    
+    /** Foreign key referencing AppInfo (database name FK_app_recommend_sort_app_ver_id) */
+    lazy val appInfoFk = foreignKey("FK_app_recommend_sort_app_ver_id", appVerId, AppInfo)(r => r.appVerId, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  }
+  /** Collection-like TableQuery object for table AppRecommendSort */
+  lazy val AppRecommendSort = new TableQuery(tag => new AppRecommendSort(tag))
+  
   /** Entity class storing rows of table AppStat
    *  @param deviceId Database column device_id DBType(INT), PrimaryKey
    *  @param appVerId Database column app_ver_id DBType(INT)
@@ -464,34 +490,40 @@ object Tables {
   lazy val AppSubCatMap = new TableQuery(tag => new AppSubCatMap(tag))
   
   /** Entity class storing rows of table AppSubjectBase
-   *  @param subjectId Database column subject_id DBType(INT), AutoInc, PrimaryKey
+   *  @param subjectId Database column subject_id DBType(INT), AutoInc
    *  @param subjectName Database column subject_name DBType(VARCHAR), Length(200,true)
-   *  @param subjectUrl Database column subject_url DBType(VARCHAR), Length(200,true)
-   *  @param subjectType Database column subject_type DBType(TINYINT)
+   *  @param imageUrl Database column image_url DBType(VARCHAR), Length(200,true)
+   *  @param subjectType Database column subject_type DBType(VARCHAR), Length(20,true)
+   *  @param subjectIndex Database column subject_index DBType(INT)
+   *  @param subjectAction Database column subject_action DBType(VARCHAR), Length(300,true)
    *  @param subjectStatus Database column subject_status DBType(TINYINT)
    *  @param subjectUpload Database column subject_upload DBType(BIGINT)
    *  @param subjectUpdate Database column subject_update DBType(BIGINT)
    *  @param subjectAuthor Database column subject_author DBType(INT) */
-  case class AppSubjectBaseRow(subjectId: Int, subjectName: String, subjectUrl: String, subjectType: Byte, subjectStatus: Byte, subjectUpload: Long, subjectUpdate: Long, subjectAuthor: Int)
+  case class AppSubjectBaseRow(subjectId: Int, subjectName: String, imageUrl: String, subjectType: String, subjectIndex: Int, subjectAction: String, subjectStatus: Byte, subjectUpload: Long, subjectUpdate: Long, subjectAuthor: Int)
   /** GetResult implicit for fetching AppSubjectBaseRow objects using plain SQL queries */
   implicit def GetResultAppSubjectBaseRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Byte], e3: GR[Long]): GR[AppSubjectBaseRow] = GR{
     prs => import prs._
-    AppSubjectBaseRow.tupled((<<[Int], <<[String], <<[String], <<[Byte], <<[Byte], <<[Long], <<[Long], <<[Int]))
+    AppSubjectBaseRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[Int], <<[String], <<[Byte], <<[Long], <<[Long], <<[Int]))
   }
   /** Table description of table app_subject_base. Objects of this class serve as prototypes for rows in queries. */
   class AppSubjectBase(_tableTag: Tag) extends Table[AppSubjectBaseRow](_tableTag, "app_subject_base") {
-    def * = (subjectId, subjectName, subjectUrl, subjectType, subjectStatus, subjectUpload, subjectUpdate, subjectAuthor) <> (AppSubjectBaseRow.tupled, AppSubjectBaseRow.unapply)
+    def * = (subjectId, subjectName, imageUrl, subjectType, subjectIndex, subjectAction, subjectStatus, subjectUpload, subjectUpdate, subjectAuthor) <> (AppSubjectBaseRow.tupled, AppSubjectBaseRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (subjectId.?, subjectName.?, subjectUrl.?, subjectType.?, subjectStatus.?, subjectUpload.?, subjectUpdate.?, subjectAuthor.?).shaped.<>({r=>import r._; _1.map(_=> AppSubjectBaseRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (subjectId.?, subjectName.?, imageUrl.?, subjectType.?, subjectIndex.?, subjectAction.?, subjectStatus.?, subjectUpload.?, subjectUpdate.?, subjectAuthor.?).shaped.<>({r=>import r._; _1.map(_=> AppSubjectBaseRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
-    /** Database column subject_id DBType(INT), AutoInc, PrimaryKey */
-    val subjectId: Column[Int] = column[Int]("subject_id", O.AutoInc, O.PrimaryKey)
+    /** Database column subject_id DBType(INT), AutoInc */
+    val subjectId: Column[Int] = column[Int]("subject_id", O.AutoInc)
     /** Database column subject_name DBType(VARCHAR), Length(200,true) */
     val subjectName: Column[String] = column[String]("subject_name", O.Length(200,varying=true))
-    /** Database column subject_url DBType(VARCHAR), Length(200,true) */
-    val subjectUrl: Column[String] = column[String]("subject_url", O.Length(200,varying=true))
-    /** Database column subject_type DBType(TINYINT) */
-    val subjectType: Column[Byte] = column[Byte]("subject_type")
+    /** Database column image_url DBType(VARCHAR), Length(200,true) */
+    val imageUrl: Column[String] = column[String]("image_url", O.Length(200,varying=true))
+    /** Database column subject_type DBType(VARCHAR), Length(20,true) */
+    val subjectType: Column[String] = column[String]("subject_type", O.Length(20,varying=true))
+    /** Database column subject_index DBType(INT) */
+    val subjectIndex: Column[Int] = column[Int]("subject_index")
+    /** Database column subject_action DBType(VARCHAR), Length(300,true) */
+    val subjectAction: Column[String] = column[String]("subject_action", O.Length(300,varying=true))
     /** Database column subject_status DBType(TINYINT) */
     val subjectStatus: Column[Byte] = column[Byte]("subject_status")
     /** Database column subject_upload DBType(BIGINT) */
@@ -500,6 +532,9 @@ object Tables {
     val subjectUpdate: Column[Long] = column[Long]("subject_update")
     /** Database column subject_author DBType(INT) */
     val subjectAuthor: Column[Int] = column[Int]("subject_author")
+    
+    /** Primary key of AppSubjectBase (database name app_subject_base_PK) */
+    val pk = primaryKey("app_subject_base_PK", (subjectId, subjectAuthor))
   }
   /** Collection-like TableQuery object for table AppSubjectBase */
   lazy val AppSubjectBase = new TableQuery(tag => new AppSubjectBase(tag))
@@ -634,6 +669,32 @@ object Tables {
   }
   /** Collection-like TableQuery object for table AppSuggest */
   lazy val AppSuggest = new TableQuery(tag => new AppSuggest(tag))
+  
+  /** Entity class storing rows of table AppTotalSort
+   *  @param appVerId Database column app_ver_id DBType(INT)
+   *  @param totalId Database column total_id DBType(INT) */
+  case class AppTotalSortRow(appVerId: Int, totalId: Int)
+  /** GetResult implicit for fetching AppTotalSortRow objects using plain SQL queries */
+  implicit def GetResultAppTotalSortRow(implicit e0: GR[Int]): GR[AppTotalSortRow] = GR{
+    prs => import prs._
+    AppTotalSortRow.tupled((<<[Int], <<[Int]))
+  }
+  /** Table description of table app_total_sort. Objects of this class serve as prototypes for rows in queries. */
+  class AppTotalSort(_tableTag: Tag) extends Table[AppTotalSortRow](_tableTag, "app_total_sort") {
+    def * = (appVerId, totalId) <> (AppTotalSortRow.tupled, AppTotalSortRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (appVerId.?, totalId.?).shaped.<>({r=>import r._; _1.map(_=> AppTotalSortRow.tupled((_1.get, _2.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    
+    /** Database column app_ver_id DBType(INT) */
+    val appVerId: Column[Int] = column[Int]("app_ver_id")
+    /** Database column total_id DBType(INT) */
+    val totalId: Column[Int] = column[Int]("total_id")
+    
+    /** Foreign key referencing AppInfo (database name FK_app_total_sort_app_ver_id) */
+    lazy val appInfoFk = foreignKey("FK_app_total_sort_app_ver_id", appVerId, AppInfo)(r => r.appVerId, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  }
+  /** Collection-like TableQuery object for table AppTotalSort */
+  lazy val AppTotalSort = new TableQuery(tag => new AppTotalSort(tag))
   
   /** Entity class storing rows of table AppTypeKey
    *  @param typeParId Database column type_par_id DBType(INT)
