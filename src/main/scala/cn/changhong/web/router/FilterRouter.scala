@@ -72,11 +72,12 @@ object TimeoutFilterService extends SimpleFilter[Request,Response]{
 }
 
 object ForeRouter extends Service[Request,Response]{
-  lazy val futurePool=FuturePool(Executors.newFixedThreadPool(GlobalConfigFactory.executor_worker_max_thread_size))
+  lazy val futurePool=ExecutorProvider.futurePool//FuturePool(Executors.newFixedThreadPool(GlobalConfigFactory.executor_worker_max_thread_size))
   override def apply(request: Request): Future[Response] = {
     val restRequest=RestRequest(request)
     futurePool {
       restRequest.path(0) match {
+
         case "auth" => ForeAuthAction(restRequest)
         case "family"=>ForeFamilyMemberAction(restRequest)
         case "user" => NotFindActionException("user")

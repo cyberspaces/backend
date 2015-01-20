@@ -1,7 +1,7 @@
 import com.github.retronym.SbtOneJar._
 oneJarSettings
 
-name := "WebTemplate"
+name := "lazystore"
 
 version := "1.0"
 

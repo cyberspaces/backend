@@ -38,6 +38,12 @@ object GlobalConfigFactory {
   val exceed_spider_threshold_frequency=100
   val exceed_spider_threshold_seconds=3600
 
+  val default_apps_count=20
+
+  val log_user_name=""
+
+
+
   def apply(confPath:String): Unit ={
     val confInputStream=this.getClass.getClassLoader.getResourceAsStream("webconf.properties")
     val p=new Properties()//(confInputStream)

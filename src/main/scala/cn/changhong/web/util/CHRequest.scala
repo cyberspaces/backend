@@ -6,6 +6,7 @@ import com.twitter.finagle.http.Request
 import org.jboss.netty.handler.codec.http.{QueryStringDecoder, HttpRequest, HttpMethod}
 import scala.collection.JavaConverters._
 
+
 /**
  * Created by yangguo on 14-12-9.
  */
