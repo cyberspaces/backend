@@ -1,5 +1,6 @@
 package cn.changhong.lazystore.controller
 
+import cn.changhong.lazystore.persistent.dao.Appsdao
 import cn.changhong.web.init.GlobalConfigFactory
 import cn.changhong.web.util.{ResponseContent, RestResponseInlineCode, RestException, RestRequest}
 /**
@@ -9,8 +10,9 @@ object AppsService {
   private[this] val request_key_condition="name"
   private[this] val request_key_start="s"
   private[this] val request_key_max="m"
+  private[this] val request_key_c="c"
 
-  private[controller] case class AppsRequest(var condition:Option[String],var start:Int,var max:Int)
+  case class AppsRequest(var condition:Option[String],var start:Int,var max:Int,columns:Option[String]=None)
   private[this] def decoder(request:RestRequest):AppsRequest= {
     var temp = request.urlParams.all.get(request_key_start)
     val start =
@@ -34,8 +36,14 @@ object AppsService {
     val condition =
       if (temp != null && temp.size() > 0) Some(temp.get(0))
       else None
-    AppsRequest(condition, start, max)
+    val columns={
+      temp=request.urlParams.all.get(request_key_c)
+      if(temp!=null&& temp.size()>0) Some(temp.get(0))
+      else None
+    }
+    AppsRequest(condition, start, max,columns)
   }
+
 
   /**
    * 返回推荐首页APP
@@ -43,7 +51,8 @@ object AppsService {
   object SpeityAppsService extends SpeityAppsService with BaseAopService
   private[controller] class SpeityAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-???
+      val content = Appsdao.searchSpeityApps(decoder(request))
+      ResponseContent(content)
     }
   }
 
@@ -53,7 +62,9 @@ object AppsService {
   object TopicAppsService extends TopicAppsService with BaseAopService
 
   private[controller] class TopicAppsService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = ???
+    override def apply(request: RestRequest): ResponseContent = {
+
+    }
   }
 
   /**
@@ -62,7 +73,10 @@ object AppsService {
   object HotTopApppsService extends HotTopApppsService with BaseAopService
 
   private[controller] class HotTopApppsService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = ???
+    override def apply(request: RestRequest): ResponseContent = {
+      val content=Appsdao.searchTopHotApps(decoder(request))
+      ResponseContent(content)
+    }
   }
 
   /**
@@ -71,7 +85,10 @@ object AppsService {
   object TotalTopAppsService extends TotalTopAppsService with BaseAopService
 
   private[controller] class TotalTopAppsService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = ???
+    override def apply(request: RestRequest): ResponseContent = {
+      val content=Appsdao.searchTopSaleApps(decoder(request))
+      ResponseContent(content)
+    }
   }
 
   /**
@@ -80,7 +97,14 @@ object AppsService {
   object TagSpeityAppsService extends TagSpeityAppsService with BaseAopService
 
   private[controller] class TagSpeityAppsService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = ???
+    override def apply(request: RestRequest): ResponseContent = {
+      val appRequest=decoder(request)
+      val content=appRequest.condition match{
+        case Some(s)=>Appsdao.searchSpeityApps(appRequest)
+        case None=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"tag is null")
+      }
+      ResponseContent(content)
+    }
   }
 
   /**
@@ -89,7 +113,14 @@ object AppsService {
   object TagTopAppsService extends TagTopAppsService with BaseAopService
 
   private[controller] class TagTopAppsService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = ???
+    override def apply(request: RestRequest): ResponseContent = {
+      val appRequest=decoder(request)
+      val content=appRequest.condition match {
+        case Some(s)=>Appsdao.searchTopHotApps(appRequest)
+        case None=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"tag is null");
+      }
+      ResponseContent(content)
+    }
   }
 
   /**
@@ -98,7 +129,11 @@ object AppsService {
   object TagNewAppsService extends TagNewAppsService with BaseAopService
 
   private[controller] class TagNewAppsService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = ???
+    override def apply(request: RestRequest): ResponseContent = {
+      val appRequest = decoder(request)
+      val content = Appsdao.newAddApps(appRequest)
+      ResponseContent(content)
+    }
   }
 
   /**

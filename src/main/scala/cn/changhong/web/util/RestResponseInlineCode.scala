@@ -51,9 +51,10 @@ object RestResponseInlineCode {
   //服务器内部错误
   val service_inline_cause = -22
   //服务器编码请求体错误
-  val service_encoder_response_cause= -23
+  val service_encoder_response_cause = -23
   //账号已经存在
-  val already_user_account= -24
+  val already_user_account = -24
   //账号已经被删除
-  val login_user_delete= -25
+  val login_user_delete = -25
+  val db_executor_error = -26
 }

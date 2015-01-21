@@ -32,3 +32,5 @@ libraryDependencies += "com.twitter" % "finagle-redis_2.10" % "6.22.0" withSourc
 libraryDependencies += "redis.clients" % "jedis" % "2.6.1" withSources() withJavadoc()
 
 libraryDependencies += "org.apache.commons" % "commons-pool2" % "2.0" withSources() withJavadoc()
+
+libraryDependencies += "org.specs2" % "specs2_2.10" % "3.0-M2" withSources() withJavadoc()

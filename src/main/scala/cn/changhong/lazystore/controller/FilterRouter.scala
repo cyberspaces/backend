@@ -28,6 +28,8 @@ object LazyStoreForeRouter extends Service[Request,Response]{
   }
 }
 object ForeAppsAction extends RestAction[RestRequest,Response]{
+
+
   override def apply(request: RestRequest): Response = {
    val requestType=request.urlParams.getParam[String]("type") match{
       case s::Nil=>s
