@@ -56,5 +56,11 @@ object RestResponseInlineCode {
   val already_user_account = -24
   //账号已经被删除
   val login_user_delete = -25
+  //数据库查询错误
   val db_executor_error = -26
+  //没有找到标记
+  val no_find_tag = -27
+  //插入数据失败
+  val db_insert_error= -28
+
 }

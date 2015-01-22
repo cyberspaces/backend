@@ -7,42 +7,38 @@ import cn.changhong.web.util.{ResponseContent, RestResponseInlineCode, RestExcep
    * Created by yangguo on 15-1-20.
 */
 object AppsService {
-  private[this] val request_key_condition="name"
-  private[this] val request_key_start="s"
-  private[this] val request_key_max="m"
-  private[this] val request_key_c="c"
 
-  case class AppsRequest(var condition:Option[String],var start:Int,var max:Int,columns:Option[String]=None)
-  private[this] def decoder(request:RestRequest):AppsRequest= {
-    var temp = request.urlParams.all.get(request_key_start)
-    val start =
-      if (temp != null && temp.size() > 0) {
-        try {
-          temp.get(0).toInt
-        } catch {
-          case ex => throw new RestException(RestResponseInlineCode.invalid_request_parameters, s"传入参数s=${temp.get(0)}不为数值类型")
-        }
-      } else Integer.MAX_VALUE
-    temp = request.urlParams.all.get(request_key_max)
-    val max =
-      if (temp != null && temp.size() > 0)
-        try {
-          temp.get(0).toInt
-        } catch {
-          case ex => throw new RestException(RestResponseInlineCode.invalid_request_parameters, s"传入参数m=${temp.get(0)}不为数值类型")
-        }
-      else GlobalConfigFactory.default_apps_count
-    temp = request.urlParams.all.get(request_key_condition)
-    val condition =
-      if (temp != null && temp.size() > 0) Some(temp.get(0))
-      else None
-    val columns={
-      temp=request.urlParams.all.get(request_key_c)
-      if(temp!=null&& temp.size()>0) Some(temp.get(0))
-      else None
-    }
-    AppsRequest(condition, start, max,columns)
-  }
+
+//  def decoder(request:RestRequest):AppsRequest= {
+//    var temp = request.urlParams.all.get(request_key_start)
+//    val start =
+//      if (temp != null && temp.size() > 0) {
+//        try {
+//          temp.get(0).toInt
+//        } catch {
+//          case ex => throw new RestException(RestResponseInlineCode.invalid_request_parameters, s"传入参数s=${temp.get(0)}不为数值类型")
+//        }
+//      } else Integer.MAX_VALUE
+//    temp = request.urlParams.all.get(request_key_max)
+//    val max =
+//      if (temp != null && temp.size() > 0)
+//        try {
+//          temp.get(0).toInt
+//        } catch {
+//          case ex => throw new RestException(RestResponseInlineCode.invalid_request_parameters, s"传入参数m=${temp.get(0)}不为数值类型")
+//        }
+//      else GlobalConfigFactory.default_apps_count
+//    temp = request.urlParams.all.get(request_key_condition)
+//    val condition =
+//      if (temp != null && temp.size() > 0) Some(temp.get(0))
+//      else None
+//    val columns={
+//      temp=request.urlParams.all.get(request_key_c)
+//      if(temp!=null&& temp.size()>0) Some(temp.get(0))
+//      else None
+//    }
+//    AppsRequest(condition, start, max,columns)
+////  }
 
 
   /**
@@ -51,7 +47,7 @@ object AppsService {
   object SpeityAppsService extends SpeityAppsService with BaseAopService
   private[controller] class SpeityAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val content = Appsdao.searchSpeityApps(decoder(request))
+      val content = Appsdao.searchSpeityApps(AppsRequest(request))
       ResponseContent(content)
     }
   }
@@ -61,9 +57,12 @@ object AppsService {
    */
   object TopicAppsService extends TopicAppsService with BaseAopService
 
+  /**
+   *？？？
+   */
   private[controller] class TopicAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-
+      ???
     }
   }
 
@@ -74,7 +73,7 @@ object AppsService {
 
   private[controller] class HotTopApppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val content=Appsdao.searchTopHotApps(decoder(request))
+      val content=Appsdao.searchTopHotApps(AppsRequest(request))
       ResponseContent(content)
     }
   }
@@ -86,7 +85,7 @@ object AppsService {
 
   private[controller] class TotalTopAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val content=Appsdao.searchTopSaleApps(decoder(request))
+      val content=Appsdao.searchTopSaleApps(AppsRequest(request))
       ResponseContent(content)
     }
   }
@@ -98,7 +97,7 @@ object AppsService {
 
   private[controller] class TagSpeityAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val appRequest=decoder(request)
+      val appRequest=AppsRequest(request)
       val content=appRequest.condition match{
         case Some(s)=>Appsdao.searchSpeityApps(appRequest)
         case None=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"tag is null")
@@ -114,7 +113,7 @@ object AppsService {
 
   private[controller] class TagTopAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val appRequest=decoder(request)
+      val appRequest=AppsRequest(request)
       val content=appRequest.condition match {
         case Some(s)=>Appsdao.searchTopHotApps(appRequest)
         case None=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"tag is null");
@@ -130,7 +129,7 @@ object AppsService {
 
   private[controller] class TagNewAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val appRequest = decoder(request)
+      val appRequest = AppsRequest(request)
       val content = Appsdao.newAddApps(appRequest)
       ResponseContent(content)
     }
@@ -142,7 +141,10 @@ object AppsService {
   object AppSimilarService extends AppSimilarService with BaseAopService
 
   private[controller] class AppSimilarService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = ???
+    override def apply(request: RestRequest): ResponseContent = {
+      val content=Appsdao.searchSimilarApps(AppsRequest(request))
+      ResponseContent(content)
+    }
   }
 
   /**
@@ -151,7 +153,10 @@ object AppsService {
   object SearchAppService extends SearchAppService with BaseAopService
 
   private[controller] class SearchAppService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = ???
+    override def apply(request: RestRequest): ResponseContent = {
+      val content=Appsdao.conditionSearchApps(AppsRequest(request))
+      ResponseContent(content)
+    }
   }
 
 }

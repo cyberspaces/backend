@@ -1,5 +1,6 @@
 package cn.changhong.lazystore.controller
 
+import cn.changhong.lazystore.persistent.dao.CategoryDao
 import cn.changhong.lazystore.util.{LazyStoreForeRouterType, LazyStoreRequestType}
 import cn.changhong.web.router.RestAction
 import com.twitter.finagle.Service
@@ -7,6 +8,8 @@ import com.twitter.finagle.http.{Response, Request}
 import com.twitter.util.Future
 
 import cn.changhong.web.util._
+import org.jboss.netty.handler.codec.http.HttpMethod
+
 /**
  * Created by yangguo on 15-1-19.
  */
@@ -15,57 +18,48 @@ object LazyStoreForeRouter extends Service[Request,Response]{
   override def apply(request: Request): Future[Response] = {
     val restRequest=RestRequest(request)
     futurePool{
-      restRequest.path(2) match{
-        case LazyStoreForeRouterType.apps=>null
+      val content=restRequest.path(2) match{
+        case LazyStoreForeRouterType.apps=>ForeAppsAction(restRequest)
         case LazyStoreForeRouterType.topics=>null
-        case LazyStoreForeRouterType.categorys=>null
+        case LazyStoreForeRouterType.categorys=>ForeCategorysAction(restRequest)
         case LazyStoreForeRouterType.comment=>null
         case LazyStoreForeRouterType.device=>null
         case s:String=>null
         case _=>null
       }
+      val response=Response()
+      response.setContent(Parser.ObjectToJsonStringToChannelBuffer(content))
+      response
     }
   }
 }
-object ForeAppsAction extends RestAction[RestRequest,Response]{
+object ForeAppsAction extends RestAction[RestRequest,ResponseContent]{
+  import AppsService._
 
-
-  override def apply(request: RestRequest): Response = {
+  override def apply(request: RestRequest): ResponseContent = {
    val requestType=request.urlParams.getParam[String]("type") match{
       case s::Nil=>s
       case _=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Type类型无效")
     }
-    requestType match{
-      case LazyStoreRequestType.speity=>null
+   requestType match{
+      case LazyStoreRequestType.speity=>SpeityAppsService(request)
       case LazyStoreRequestType.topic=>null
-      case LazyStoreRequestType.top_total=>null
-      case LazyStoreRequestType.top_hot=>null
-      case LazyStoreRequestType.tag_speity=>null
-      case LazyStoreRequestType.tag_top=>null
-      case LazyStoreRequestType.tag_new=>null
-      case LazyStoreRequestType.similar=>null
-      case LazyStoreRequestType.search=>null
-      case s=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,s"type=$s 错误")
-    }
-
-
-  }
-}
-object ForeCategorysAction extends RestAction[RestRequest,Response]{
-  override def apply(request: RestRequest): Response = {
-    val requestType=request.urlParams.getParam[String]("type") match{
-      case s::Nil=>s
-      case _=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Type类型无效")
-    }
-    requestType match{
-      case LazyStoreRequestType.app=>null
-      case LazyStoreRequestType.game=>null
+      case LazyStoreRequestType.top_total=>TotalTopAppsService(request)
+      case LazyStoreRequestType.top_hot=>HotTopApppsService(request)
+      case LazyStoreRequestType.tag_speity=>TagSpeityAppsService(request)
+      case LazyStoreRequestType.tag_top=>TagTopAppsService(request)
+      case LazyStoreRequestType.tag_new=>TagNewAppsService(request)
+      case LazyStoreRequestType.similar=>AppSimilarService(request)
+      case LazyStoreRequestType.search=>SearchAppService(request)
       case s=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,s"type=$s 错误")
     }
   }
 }
-object ForeCommentAction extends RestAction[RestRequest,Response]{
-  override def apply(request: RestRequest): Response = {
+object ForeCategorysAction extends RestAction[RestRequest,ResponseContent]{
+  override def apply(request: RestRequest): ResponseContent = CategoryService.GetCategoryService(request)
+}
+object ForeCommentAction extends RestAction[RestRequest,ResponseContent]{
+  override def apply(request: RestRequest): ResponseContent = {
     val requestType=try {
       request.urlParams.getParam[String]("type") match {
         case s :: Nil => Some(s)
@@ -73,18 +67,21 @@ object ForeCommentAction extends RestAction[RestRequest,Response]{
       }
     } catch{case _=>None}
     requestType match {
-      case None =>null
+      case None =>
+        if (request.method.equals(HttpMethod.PUT)) {
+          UserCommentService.AddAppCommentService(request)
+        } else throw new RestException(RestResponseInlineCode.no_such_method, "此方法不存在")
       case Some(s) =>
         s match {
-          case LazyStoreRequestType.stats =>null
-          case LazyStoreRequestType.comment =>null
+          case LazyStoreRequestType.stats => UserCommentService.GetAppStarService(request)
+          case LazyStoreRequestType.comment => UserCommentService.GetAppCommentService(request)
           case t => throw new RestException(RestResponseInlineCode.invalid_request_parameters, s"type=$t 错误")
         }
     }
   }
 }
-object ForeDeviceAction extends RestAction[RestRequest,Response]{
-  override def apply(request: RestRequest): Response = {
+object ForeDeviceAction extends RestAction[RestRequest,ResponseContent]{
+  override def apply(request: RestRequest): ResponseContent = {
     if(request.path.size==3){
      ???
     }else if(request.path.size==4&&request.path.last.equals(LazyStoreRequestType.stats)){
@@ -95,8 +92,8 @@ object ForeDeviceAction extends RestAction[RestRequest,Response]{
     }
   }
 }
-object ForeTopicsAction extends RestAction[RestRequest,Response]{
-  override def apply(request: RestRequest): Response = {
+object ForeTopicsAction extends RestAction[RestRequest,ResponseContent]{
+  override def apply(request: RestRequest): ResponseContent = {
     val requestType=request.urlParams.getParam[String]("type") match{
       case s::Nil=>s
       case _=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Type类型无效")

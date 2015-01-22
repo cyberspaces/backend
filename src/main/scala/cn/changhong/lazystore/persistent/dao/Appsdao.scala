@@ -1,7 +1,6 @@
 package cn.changhong.lazystore.persistent.dao
 
-import cn.changhong.lazystore.controller.AppsService.AppsRequest
-import cn.changhong.lazystore.persistent.Tables.Tables._
+import cn.changhong.lazystore.controller.AppsRequest
 import cn.changhong.web.persistent.SlickDBPoolManager
 import cn.changhong.web.util.{RestResponseInlineCode, RestException}
 
@@ -17,6 +16,7 @@ object Appsdao {
   private[this] val t_top_sale = "app_total_sale"
   private[this] val t_speity_sort = "app_recommend_sort"
   private[this] val c_tag_name="app_label"
+  private[this] val c_app_name="app_name"
   private[this] val c_app_update_time="app_update"
   //  private[this] val t_app
 
@@ -50,19 +50,6 @@ object Appsdao {
     }
   }
 
-  @Deprecated("used getSortIndexs")
-  private[this] def getSpeityAppIndexs(request: AppsRequest) = {
-    SlickDBPoolManager.DBPool.withTransaction { implicit session =>
-      try {
-        val res = for {
-          recommend <- AppRecommendSort if recommend.recommendId > request.start
-        } yield recommend.appVerId
-        res.take(request.max).list
-      } catch {
-        case ex => throw new RestException(RestResponseInlineCode.db_executor_error, ex.getMessage)
-      }
-    }
-  }
 
   private[this] def searchApps(columns: String, appIds: List[String]) = {
     SlickDBPoolManager.DBPool.withTransaction { implicit session =>
@@ -93,9 +80,33 @@ object Appsdao {
      sql"select #$c_tag_name from #$t_app_info where #$c_app_id = '#${request.condition.get}'".as(SlickResultString).list
     }
     tags match{
-      case s::list=>
-      case _=>
+      case s::list=>{
+        val columns=request.columns match{
+          case Some(c)=>c
+          case None=>"*"
+        }
+        val where=s.trim.split(",").foldLeft("")((s,i)=>"("+s+s"$c_tag_name like '%$i%') or ").drop(4)
+        val indexs=SlickDBPoolManager.DBPool.withTransaction{implicit session=>
+          sql"select #$c_app_id from #$t_top_sale where (#$where) and #$c_app_id>#${request.start} limit #${request.max}".as(SlickResultString).list
+        }
+        searchApps(columns,indexs)
+      }
+      case _=>throw new RestException(RestResponseInlineCode.no_find_tag,"未找到tag")
     }
 
+  }
+  def conditionSearchApps(request:AppsRequest)={
+    request.condition match{
+      case Some(s)=>
+        val columns=request.columns match{
+          case Some(c)=>c
+          case None=>"*"
+        }
+        val where=s"$c_app_name like '%$s%' or $c_tag_name like '%$s%'"
+        SlickDBPoolManager.DBPool.withTransaction{implicit session=>
+          sql"select #$columns from #$t_app_info where (#$c_app_id >#${request.start}}) and (#$where) limit #${request.max}}"
+        }
+      case None=> throw new RestException(RestResponseInlineCode.invalid_request_parameters,"请输入需要查询的App")
+    }
   }
 }

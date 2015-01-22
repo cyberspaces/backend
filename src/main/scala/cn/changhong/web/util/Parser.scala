@@ -2,6 +2,7 @@ package cn.changhong.web.util
 
 import java.nio.charset.Charset
 
+import cn.changhong.lazystore.persistent.Tables.Tables.AppCommRow
 import cn.changhong.web.persistent.Tables.Tables.{FamilyMemberRow, UserRow}
 import net.liftweb.json.DefaultFormats
 import net.liftweb.json._
@@ -48,6 +49,15 @@ object Parser {
     override def apply(json: String): UserRow = {
       try{
         (parse(json).extract[UserRow])
+      }catch{
+        case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
+      }
+    }
+  }
+  implicit object AppCommentParser extends Parser[AppCommRow]{
+    override def apply(json: String): AppCommRow = {
+      try{
+        (parse(json).extract[AppCommRow])
       }catch{
         case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
       }

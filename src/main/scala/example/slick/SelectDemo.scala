@@ -1,6 +1,6 @@
 package example.slick
 
-import cn.changhong.lazystore.controller.AppsService.AppsRequest
+import cn.changhong.lazystore.controller.AppsRequest
 import cn.changhong.lazystore.persistent.dao.{SlickResultString, SlickResultMap}
 import cn.changhong.web.persistent.SlickDBPoolManager
 import cn.changhong.web.persistent.Tables.Tables._
@@ -59,6 +59,14 @@ object SelectDemo extends App{
   println(res.length)
   println(Parser.ObjectToJsonString(Sql))
   println(Parser.ObjectToJsonString(sql1))
+  insert(null)
+  def insert(user:UserRow)={
+    val id=SlickDBPoolManager.DBPool.withTransaction{implicit session=>
+      User returning User.map(_.id) insert(UserRow(-100,"user1","p1","e1","pwss1","status","type","bind","prottype"))
+    }
+    if(id>0) println(id)
+    println(id)
+  }
 //  println(Parser.ObjectToJsonString(createQuery()))
 //  println(Parser.ObjectToJsonString(createIndexs(AppsRequest(None,20,20))))
 }

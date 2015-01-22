@@ -10,6 +10,11 @@ object SlickResultString extends GetResult[String]{
     pr.rs.getObject(1).toString
   }
 }
+object SlickResultInt extends GetResult[Int]{
+  override def apply(pr: PositionedResult): Int = {
+    pr.rs.getObject(1).toString.toInt
+  }
+}
 object SlickResultMap extends GetResult[Map[String,Any]]{
   override def apply(pr: PositionedResult): Map[String, Any] = {
     val cvalues=pr.rs
@@ -18,3 +23,4 @@ object SlickResultMap extends GetResult[Map[String,Any]]{
     res
   }
 }
+
