@@ -1,6 +1,5 @@
 package cn.changhong.lazystore.controller
 
-import cn.changhong.lazystore.persistent.dao.CategoryDao
 import cn.changhong.lazystore.util.{LazyStoreForeRouterType, LazyStoreRequestType}
 import cn.changhong.web.router.RestAction
 import com.twitter.finagle.Service
@@ -20,11 +19,10 @@ object LazyStoreForeRouter extends Service[Request,Response]{
     futurePool{
       val content=restRequest.path(2) match{
         case LazyStoreForeRouterType.apps=>ForeAppsAction(restRequest)
-        case LazyStoreForeRouterType.topics=>null
+        case LazyStoreForeRouterType.topics=>ForeTopicsAction(restRequest)
         case LazyStoreForeRouterType.categorys=>ForeCategorysAction(restRequest)
-        case LazyStoreForeRouterType.comment=>null
-        case LazyStoreForeRouterType.device=>null
-        case s:String=>null
+        case LazyStoreForeRouterType.comment=>ForeCommentAction(restRequest)
+        case LazyStoreForeRouterType.device=>ForeDeviceAction(restRequest)
         case _=>null
       }
       val response=Response()
@@ -83,9 +81,15 @@ object ForeCommentAction extends RestAction[RestRequest,ResponseContent]{
 object ForeDeviceAction extends RestAction[RestRequest,ResponseContent]{
   override def apply(request: RestRequest): ResponseContent = {
     if(request.path.size==3){
-     ???
+     request.method match{
+       case HttpMethod.PUT=>ClientDeviceService.AddClientDeviceService(request)
+       case _=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"type类型无效")
+     }
     }else if(request.path.size==4&&request.path.last.equals(LazyStoreRequestType.stats)){
-      ???
+      request.method match{
+        case HttpMethod.PUT=>ClientDeviceService.AddClientDeviceCopStats(request)
+        case _=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"type类型无效")
+      }
     }else{
        throw new RestException(RestResponseInlineCode.invalid_request_parameters,"type类型无效")
 
@@ -93,19 +97,6 @@ object ForeDeviceAction extends RestAction[RestRequest,ResponseContent]{
   }
 }
 object ForeTopicsAction extends RestAction[RestRequest,ResponseContent]{
-  override def apply(request: RestRequest): ResponseContent = {
-    val requestType=request.urlParams.getParam[String]("type") match{
-      case s::Nil=>s
-      case _=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Type类型无效")
-    }
-    requestType match{
-      case LazyStoreRequestType.speity2=>null
-      case LazyStoreRequestType.topic=>null
-      case LazyStoreRequestType.tag=>null
-      case LazyStoreRequestType.all=>null
-      case LazyStoreRequestType.speity1=>null
-      case s=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,s"type=$s 错误")
-    }
-  }
+  override def apply(request: RestRequest): ResponseContent = AppTopicService(request)
 }
 

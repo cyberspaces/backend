@@ -2,7 +2,7 @@ package cn.changhong.web.util
 
 import java.nio.charset.Charset
 
-import cn.changhong.lazystore.persistent.Tables.Tables.AppCommRow
+import cn.changhong.lazystore.persistent.Tables.Tables.{AppSubjectBaseRow, AppStatRow, AppDeviceRow, AppCommRow}
 import cn.changhong.web.persistent.Tables.Tables.{FamilyMemberRow, UserRow}
 import net.liftweb.json.DefaultFormats
 import net.liftweb.json._
@@ -63,6 +63,15 @@ object Parser {
       }
     }
   }
+  implicit object AppTopicParser extends Parser[AppSubjectBaseRow]{
+    override def apply(json: String): AppSubjectBaseRow = {
+      try{
+        (parse(json).extract[AppSubjectBaseRow])
+      }catch{
+        case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
+      }
+    }
+  }
 
   object FamilyMemberParser extends Parser[FamilyMemberRow] {
     override def apply(json: String): FamilyMemberRow = {
@@ -79,6 +88,24 @@ object Parser {
         parse(x).extract[Map[String,String]]
       }catch{
         case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,x,"Map[String,String]",ex.getMessage)
+      }
+    }
+  }
+  implicit object ClientDeviceParser extends Parser[AppDeviceRow]{
+    override def apply(json: String): AppDeviceRow = {
+      try {
+        (parse(json).extract[AppDeviceRow])
+      } catch {
+        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
+      }
+    }
+  }
+  implicit object ClientDeviceCopStatsParser extends Parser[AppStatRow]{
+    override def apply(json: String): AppStatRow = {
+      try {
+        (parse(json).extract[AppStatRow])
+      } catch {
+        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
       }
     }
   }
