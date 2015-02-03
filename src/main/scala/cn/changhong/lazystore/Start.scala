@@ -25,7 +25,7 @@ object Start {
     ServerBuilder()
       .codec(RichHttp[Request](Http()))
       .readTimeout(Duration(5,TimeUnit.SECONDS))
-      .bindTo(new InetSocketAddress(GlobalConfigFactory.server_ip,GlobalConfigFactory.server_port))
+      .bindTo(new InetSocketAddress(GlobalConfigFactory.server_port))
       .name(args(2))
       .build(service)
   }

@@ -38,8 +38,10 @@ object GlobalConfigFactory {
   val max_valid_request_expire_seconds=10
   val exceed_spider_threshold_frequency=100
   val exceed_spider_threshold_seconds=3600
+  val may_spider_sleep_seconds=10
 
-  val default_apps_count=20
+  /*分页查询默认返回的数据条数*/
+  val default_apps_count=24
 
   val log_user_name=""
 

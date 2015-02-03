@@ -7,6 +7,7 @@ package cn.changhong.web.router
 import java.util.UUID
 import java.util.concurrent.{Executors}
 
+import cn.changhong.lazystore.util.Util
 import cn.changhong.web.controller.ForeFamilyMemberAction
 import cn.changhong.web.controller.auth.ForeAuthAction
 import cn.changhong.web.init.GlobalConfigFactory
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory
 object SpiderActionInspectorFilterService extends SimpleFilter[Request,Response]{
   val logFactory=LoggerFactory.getLogger(GlobalConfigFactory.global_log_request_spider_name)
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
-    val remote=request.remoteHost
+    val remote=Util.getRealClientIp(request)
     println(remote)
     if(TokenUtil.validateIsHackAction(remote)){
       logFactory.info(remote)
@@ -77,7 +78,6 @@ object ForeRouter extends Service[Request,Response]{
     val restRequest=RestRequest(request)
     futurePool {
       restRequest.path(0) match {
-
         case "auth" => ForeAuthAction(restRequest)
         case "family"=>ForeFamilyMemberAction(restRequest)
         case "user" => NotFindActionException("user")

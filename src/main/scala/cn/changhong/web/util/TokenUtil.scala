@@ -17,13 +17,19 @@ abstract class TokenManager{
   def validateIsHackAction(requestClientKey:String):Boolean
 }
 object TokenUtil extends TokenManager{
+  /**
+   * 处理逻辑 判断在单位时间max_valid_request_expire_seconds 内同一客服端requestClientKey 访问超过max_valid_request_frequency次就认为客服端可能存在攻击行为，当超过exceed_spider_threshold_frequency时认为客服端存在攻击行为
+   * @param requestClientKey key
+   * @return
+   */
   override def validateIsHackAction(requestClientKey:String): Boolean = {
     RedisPoolManager.redisCommand{implicit client=>
       val key=requestClientKey
       val count=client.incr(key)
       println(requestClientKey+":"+count)
-      if(count>GlobalConfigFactory.max_valid_request_frequency) {
+      if(count>=GlobalConfigFactory.max_valid_request_frequency) {
         if(count==GlobalConfigFactory.exceed_spider_threshold_frequency) client.expire(key,GlobalConfigFactory.exceed_spider_threshold_seconds)
+        else if(count==GlobalConfigFactory.max_valid_request_frequency) client.expire(key,GlobalConfigFactory.may_spider_sleep_seconds)
         true
       }else {
         if(count == 1) client.expire(key,GlobalConfigFactory.max_valid_request_expire_seconds)

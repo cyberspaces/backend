@@ -7,10 +7,12 @@ import cn.changhong.web.util.{ResponseContent, RestResponseInlineCode, RestExcep
    * Created by yangguo on 15-1-20.
 */
 object AppsService {
+
   /**
    * 返回推荐首页APP
    */
   object SpeityAppsService extends SpeityAppsService with BaseAopService
+
   private[controller] class SpeityAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.searchSpeityApps(AppsRequest(request))
@@ -18,19 +20,6 @@ object AppsService {
     }
   }
 
-  /**
-   * 查找当前主题中的APP
-   */
-  object TopicAppsService extends TopicAppsService with BaseAopService
-
-  /**
-   *？？？
-   */
-  private[controller] class TopicAppsService extends BaseService {
-    override def apply(request: RestRequest): ResponseContent = {
-      ???
-    }
-  }
 
   /**
    * 热榜
@@ -39,7 +28,7 @@ object AppsService {
 
   private[controller] class HotTopApppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val content=Appsdao.searchTopHotApps(AppsRequest(request))
+      val content = Appsdao.searchTopHotApps(AppsRequest(request))
       ResponseContent(content)
     }
   }
@@ -51,7 +40,7 @@ object AppsService {
 
   private[controller] class TotalTopAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val content=Appsdao.searchTopSaleApps(AppsRequest(request))
+      val content = Appsdao.searchTopSaleApps(AppsRequest(request))
       ResponseContent(content)
     }
   }
@@ -63,10 +52,10 @@ object AppsService {
 
   private[controller] class TagSpeityAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val appRequest=AppsRequest(request)
-      val content=appRequest.condition match{
-        case Some(s)=>Appsdao.searchSpeityApps(appRequest)
-        case None=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"tag is null")
+      val appRequest = AppsRequest(request)
+      val content = appRequest.condition match {
+        case Some(s) => Appsdao.searchSpeityApps(appRequest)
+        case None => throw new RestException(RestResponseInlineCode.invalid_request_parameters, "tag is null")
       }
       ResponseContent(content)
     }
@@ -79,10 +68,10 @@ object AppsService {
 
   private[controller] class TagTopAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val appRequest=AppsRequest(request)
-      val content=appRequest.condition match {
-        case Some(s)=>Appsdao.searchTopHotApps(appRequest)
-        case None=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"tag is null");
+      val appRequest = AppsRequest(request)
+      val content = appRequest.condition match {
+        case Some(s) => Appsdao.searchTopHotApps(appRequest)
+        case None => throw new RestException(RestResponseInlineCode.invalid_request_parameters, "tag is null");
       }
       ResponseContent(content)
     }
@@ -108,7 +97,7 @@ object AppsService {
 
   private[controller] class AppSimilarService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val content=Appsdao.searchSimilarApps(AppsRequest(request))
+      val content = Appsdao.searchSimilarApps(AppsRequest(request))
       ResponseContent(content)
     }
   }
@@ -120,7 +109,7 @@ object AppsService {
 
   private[controller] class SearchAppService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
-      val content=Appsdao.conditionSearchApps(AppsRequest(request))
+      val content = Appsdao.conditionSearchApps(AppsRequest(request))
       ResponseContent(content)
     }
   }

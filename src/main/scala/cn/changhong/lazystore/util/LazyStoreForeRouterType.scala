@@ -9,5 +9,5 @@ object LazyStoreForeRouterType {
   val comment="comment"
   val device="device"
   val topics="topics"
-
+  val token="token"
 }
