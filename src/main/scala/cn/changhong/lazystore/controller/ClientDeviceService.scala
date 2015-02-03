@@ -8,14 +8,14 @@ import cn.changhong.web.util.{ResponseContent, RestRequest}
  */
 object ClientDeviceService {
   object AddClientDeviceService extends AddClientDeviceService with BaseAopService
-  private[this] class AddClientDeviceService extends BaseService{
+  private[controller] class AddClientDeviceService extends BaseService{
     override def apply(request: RestRequest): ResponseContent = {
       val content=ClientDeviceDao.addClientDevice(request)
       ResponseContent(content)
     }
   }
   object AddClientDeviceCopStats extends AddClientDeviceCopStats with BaseAopService
-  private[this] class AddClientDeviceCopStats extends BaseService{
+  private[controller] class AddClientDeviceCopStats extends BaseService{
     override def apply(request: RestRequest): ResponseContent = {
       val content=ClientDeviceDao.addClientDeviceCopStats(request)
       ResponseContent(content)

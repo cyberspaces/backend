@@ -34,3 +34,7 @@ libraryDependencies += "redis.clients" % "jedis" % "2.6.1" withSources() withJav
 libraryDependencies += "org.apache.commons" % "commons-pool2" % "2.0" withSources() withJavadoc()
 
 libraryDependencies += "org.specs2" % "specs2_2.10" % "3.0-M2" withSources() withJavadoc()
+
+libraryDependencies += "org.mongodb" % "casbah_2.10" % "2.8.0-RC2"
+
+

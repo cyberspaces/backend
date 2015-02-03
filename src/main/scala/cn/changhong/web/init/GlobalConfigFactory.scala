@@ -30,7 +30,8 @@ object GlobalConfigFactory {
 
   var server_ip="localhost"
   var server_port=10001
-  val server_id="ch_account_server1"
+  var server_id="ch_account_server1"
+  var server_name="lazystore_f01"
 
 
   val max_valid_request_frequency=20
@@ -43,6 +44,8 @@ object GlobalConfigFactory {
   val log_user_name=""
 
 
+  var redis_server_ip ="localhost"
+  var redis_server_port:Int=6379
 
   def apply(confPath:String): Unit ={
     val confInputStream=this.getClass.getClassLoader.getResourceAsStream("webconf.properties")

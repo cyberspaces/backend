@@ -6,20 +6,21 @@ import cn.changhong.web.util.{RestResponseInlineCode, RestException, RestRequest
 /**
  * Created by yangguo on 15-1-22.
  */
-case class AppsRequest(var condition:Option[String],var start:Int,var max:Int,columns:Option[String]=None)
+case class AppsRequest(var condition:Option[String],var start:Long,var max:Int,columns:Option[String]=None,tag:Option[String]=None)
 object AppsRequest {
 
   private[this] val request_key_condition = "name"
   private[this] val request_key_start = "s"
   private[this] val request_key_max = "m"
   private[this] val request_key_c = "c"
+  private[this] val request_key_tag="t"
 
   def apply(request: RestRequest): AppsRequest = {
     var temp = request.urlParams.all.get(request_key_start)
     val start =
       if (temp != null && temp.size() > 0) {
         try {
-          temp.get(0).toInt
+          temp.get(0).toLong
         } catch {
           case ex => throw new RestException(RestResponseInlineCode.invalid_request_parameters, s"传入参数s=${temp.get(0)}不为数值类型")
         }
@@ -42,6 +43,11 @@ object AppsRequest {
       if (temp != null && temp.size() > 0) Some(temp.get(0))
       else None
     }
-    AppsRequest(condition, start, max, columns)
+    val tag={
+      temp=request.urlParams.all.get(request_key_tag)
+      if(temp !=null && temp.size()>0) Some(temp.get(0))
+      else None
+    }
+    AppsRequest(condition, start, max, columns,tag)
   }
 }

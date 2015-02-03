@@ -23,7 +23,7 @@ trait LogService extends BaseService{
 }
 trait TempAuthCheckService extends BaseService{
   abstract override def apply(request:RestRequest):ResponseContent={
-    if(!checkTempAuth(request)) throw new RestException(RestResponseInlineCode.permission_need,"无权访问")
+    if(!checkTempAuth(request)) throw new RestException(RestResponseInlineCode.permission_need,"permission invalid")
     super.apply(request)
   }
   def checkTempAuth(request:RestRequest):Boolean={

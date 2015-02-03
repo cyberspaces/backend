@@ -7,40 +7,6 @@ import cn.changhong.web.util.{ResponseContent, RestResponseInlineCode, RestExcep
    * Created by yangguo on 15-1-20.
 */
 object AppsService {
-
-
-//  def decoder(request:RestRequest):AppsRequest= {
-//    var temp = request.urlParams.all.get(request_key_start)
-//    val start =
-//      if (temp != null && temp.size() > 0) {
-//        try {
-//          temp.get(0).toInt
-//        } catch {
-//          case ex => throw new RestException(RestResponseInlineCode.invalid_request_parameters, s"传入参数s=${temp.get(0)}不为数值类型")
-//        }
-//      } else Integer.MAX_VALUE
-//    temp = request.urlParams.all.get(request_key_max)
-//    val max =
-//      if (temp != null && temp.size() > 0)
-//        try {
-//          temp.get(0).toInt
-//        } catch {
-//          case ex => throw new RestException(RestResponseInlineCode.invalid_request_parameters, s"传入参数m=${temp.get(0)}不为数值类型")
-//        }
-//      else GlobalConfigFactory.default_apps_count
-//    temp = request.urlParams.all.get(request_key_condition)
-//    val condition =
-//      if (temp != null && temp.size() > 0) Some(temp.get(0))
-//      else None
-//    val columns={
-//      temp=request.urlParams.all.get(request_key_c)
-//      if(temp!=null&& temp.size()>0) Some(temp.get(0))
-//      else None
-//    }
-//    AppsRequest(condition, start, max,columns)
-////  }
-
-
   /**
    * 返回推荐首页APP
    */

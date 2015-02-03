@@ -8,22 +8,22 @@ import cn.changhong.web.util.{Parser, ResponseContent, RestRequest}
  */
 object UserCommentService {
   object AddAppCommentService extends AddAppCommentService with BaseAopService
-  private[this] class AddAppCommentService extends BaseService{
+  private[controller] class AddAppCommentService extends BaseService{
     override def apply(request: RestRequest): ResponseContent = {
-      val comment=Parser.AppCommentParser(Parser.ChannelBufferToString(request.underlying.getContent))
+      val comment=Parser.UAppcommentsParser(Parser.ChannelBufferToString(request.underlying.getContent))
       val content=UserCommentDao.createNewComment(comment)
       ResponseContent(content)
     }
   }
  object GetAppStarService extends GetAppStarService with BaseAopService
- private[this] class GetAppStarService extends BaseService{
+ private[controller] class GetAppStarService extends BaseService{
    override def apply(request: RestRequest): ResponseContent = {
      val content=UserCommentDao.getAppCommentStatsStar(AppsRequest(request).condition.get)
      ResponseContent(content)
    }
  }
   object GetAppCommentService extends GetAppCommentService with BaseAopService
- private[this] class GetAppCommentService extends BaseService{
+ private[controller] class GetAppCommentService extends BaseService{
    override def apply(request: RestRequest): ResponseContent = {
      val content=UserCommentDao.getAppComment(AppsRequest(request))
      ResponseContent(content)

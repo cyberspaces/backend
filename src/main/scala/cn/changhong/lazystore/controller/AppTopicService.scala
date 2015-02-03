@@ -1,6 +1,7 @@
 package cn.changhong.lazystore.controller
 
-import cn.changhong.web.util.{ResponseContent, RestRequest}
+import cn.changhong.lazystore.persistent.dao.AppTopicDao
+import cn.changhong.web.util._
 import org.jboss.netty.handler.codec.http.HttpMethod
 
 /**
@@ -9,12 +10,13 @@ import org.jboss.netty.handler.codec.http.HttpMethod
 object AppTopicService extends AppTopicService with BaseAopService
 class AppTopicService extends BaseService{
   override def apply(request: RestRequest): ResponseContent = {
+//    val appsRequest=AppsRequest(request)
     val content=request.method match{
-      case HttpMethod.GET=>
-      case HttpMethod.POST=>
-      case HttpMethod.PUT=>
-      case HttpMethod.DELETE=>
-      case _=>
+      case HttpMethod.GET=>AppTopicDao.getAppTopics(AppsRequest(request))
+      case HttpMethod.POST=>null
+      case HttpMethod.PUT=>AppTopicDao.addAppTopic(request)
+      case HttpMethod.DELETE=>null
+      case _=>throw new RestException(RestResponseInlineCode.no_such_method,"未找到此服务")
     }
     ResponseContent(content)
   }

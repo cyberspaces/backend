@@ -2,6 +2,7 @@ package cn.changhong.web.persistent
 
 import java.util.UUID
 
+import cn.changhong.web.init.GlobalConfigFactory
 import redis.clients.jedis.{JedisPool, JedisPoolConfig,Jedis}
 
 /**
@@ -14,8 +15,8 @@ object RedisPoolManager{
     config.setMaxIdle(5)
     config.setMaxWaitMillis(1000*10)
     config.setTestOnBorrow(true)
-    new JedisPool(config,"localhost",6379)
-  }
+    new JedisPool(config,GlobalConfigFactory.redis_server_ip,GlobalConfigFactory.redis_server_port)
+}
   def redisCommand[T](f:Jedis=>T): T ={
     val client=redisPool.getResource
     try{

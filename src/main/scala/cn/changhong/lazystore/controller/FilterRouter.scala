@@ -23,7 +23,7 @@ object LazyStoreForeRouter extends Service[Request,Response]{
         case LazyStoreForeRouterType.categorys=>ForeCategorysAction(restRequest)
         case LazyStoreForeRouterType.comment=>ForeCommentAction(restRequest)
         case LazyStoreForeRouterType.device=>ForeDeviceAction(restRequest)
-        case _=>null
+        case _=>throw new RestException(RestResponseInlineCode.no_such_method,"no such method find!")
       }
       val response=Response()
       response.setContent(Parser.ObjectToJsonStringToChannelBuffer(content))
@@ -41,7 +41,7 @@ object ForeAppsAction extends RestAction[RestRequest,ResponseContent]{
     }
    requestType match{
       case LazyStoreRequestType.speity=>SpeityAppsService(request)
-      case LazyStoreRequestType.topic=>null
+      case LazyStoreRequestType.topic=>AppTopicService(request)
       case LazyStoreRequestType.top_total=>TotalTopAppsService(request)
       case LazyStoreRequestType.top_hot=>HotTopApppsService(request)
       case LazyStoreRequestType.tag_speity=>TagSpeityAppsService(request)
@@ -97,6 +97,8 @@ object ForeDeviceAction extends RestAction[RestRequest,ResponseContent]{
   }
 }
 object ForeTopicsAction extends RestAction[RestRequest,ResponseContent]{
-  override def apply(request: RestRequest): ResponseContent = AppTopicService(request)
+  override def apply(request: RestRequest): ResponseContent = {
+    AppTopicService(request)
+  }
 }
 

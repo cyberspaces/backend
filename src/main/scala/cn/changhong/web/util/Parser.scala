@@ -2,13 +2,14 @@ package cn.changhong.web.util
 
 import java.nio.charset.Charset
 
-import cn.changhong.lazystore.persistent.Tables.Tables.{AppSubjectBaseRow, AppStatRow, AppDeviceRow, AppCommRow}
+import cn.changhong.lazystore.persistent.T.Tables.UAppcommentsRow
 import cn.changhong.web.persistent.Tables.Tables.{FamilyMemberRow, UserRow}
 import net.liftweb.json.DefaultFormats
 import net.liftweb.json._
 import net.liftweb.json.Extraction._
 import org.jboss.netty.buffer.{ChannelBuffers, ChannelBuffer}
 import org.jboss.netty.util.CharsetUtil
+import cn.changhong.lazystore.persistent.T.Tables._
 
 /**
  * Created by yangguo on 14-12-9.
@@ -54,25 +55,44 @@ object Parser {
       }
     }
   }
-  implicit object AppCommentParser extends Parser[AppCommRow]{
-    override def apply(json: String): AppCommRow = {
-      try{
-        (parse(json).extract[AppCommRow])
-      }catch{
-        case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
-      }
-    }
-  }
-  implicit object AppTopicParser extends Parser[AppSubjectBaseRow]{
-    override def apply(json: String): AppSubjectBaseRow = {
-      try{
-        (parse(json).extract[AppSubjectBaseRow])
-      }catch{
-        case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
-      }
-    }
-  }
 
+  object LazyTopicParser extends Parser[LazytopicRow]{
+    override def apply(json: String): LazytopicRow = {
+      try{
+        (parse(json).extract[LazytopicRow])
+      }catch{
+        case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
+      }
+    }
+  }
+  //U_device
+  object UDeviceParser extends Parser[UDeviceRow]{
+    override def apply(json: String): UDeviceRow = {
+      try{
+        (parse(json).extract[UDeviceRow])
+      }catch{
+        case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
+      }
+    }
+  }
+  object UAppStatsParser extends Parser[UAppstatsRow]{
+    override def apply(json: String): UAppstatsRow = {
+      try{
+        (parse(json).extract[UAppstatsRow])
+      }catch{
+        case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
+      }
+    }
+  }
+  object UAppcommentsParser extends Parser[UAppcommentsRow]{
+    override def apply(json: String): UAppcommentsRow = {
+      try {
+        (parse(json).extract[UAppcommentsRow])
+      } catch {
+        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
+      }
+    }
+  }
   object FamilyMemberParser extends Parser[FamilyMemberRow] {
     override def apply(json: String): FamilyMemberRow = {
       try {
@@ -91,24 +111,24 @@ object Parser {
       }
     }
   }
-  implicit object ClientDeviceParser extends Parser[AppDeviceRow]{
-    override def apply(json: String): AppDeviceRow = {
-      try {
-        (parse(json).extract[AppDeviceRow])
-      } catch {
-        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
-      }
-    }
-  }
-  implicit object ClientDeviceCopStatsParser extends Parser[AppStatRow]{
-    override def apply(json: String): AppStatRow = {
-      try {
-        (parse(json).extract[AppStatRow])
-      } catch {
-        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
-      }
-    }
-  }
+//  implicit object ClientDeviceParser extends Parser[AppDeviceRow]{
+//    override def apply(json: String): AppDeviceRow = {
+//      try {
+//        (parse(json).extract[AppDeviceRow])
+//      } catch {
+//        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
+//      }
+//    }
+//  }
+//  implicit object ClientDeviceCopStatsParser extends Parser[AppStatRow]{
+//    override def apply(json: String): AppStatRow = {
+//      try {
+//        (parse(json).extract[AppStatRow])
+//      } catch {
+//        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
+//      }
+//    }
+//  }
   object StringToChannelBuffer {
     def apply(json: String) :ChannelBuffer= {
       ChannelBuffers.wrappedBuffer(json.getBytes(Charset.forName("utf8")))
