@@ -1,4 +1,6 @@
 package cn.changhong.lazystore.persistent.T
+
+
 /** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
 object Tables {
   val profile: scala.slick.driver.JdbcProfile=scala.slick.driver.MySQLDriver
@@ -10,7 +12,7 @@ object Tables {
   import scala.slick.jdbc.{GetResult => GR}
   
   /** DDL for all tables. Call .create to execute. */
-  lazy val ddl = Appcategories.ddl ++ Appdev.ddl ++ Apppkg.ddl ++ Apptags.ddl ++ Lazyadmin.ddl ++ Lazyapp.ddl ++ Lazyappstats.ddl ++ Lazyhistorytopic.ddl ++ Lazytopic.ddl ++ UAppcomments.ddl ++ UApps.ddl ++ UAppstats.ddl ++ UDevice.ddl ++ VLazyappTags.ddl
+  lazy val ddl = Appcategories.ddl ++ Appdev.ddl ++ Apppkg.ddl ++ Apptags.ddl ++ Lazyadmin.ddl ++ Lazyapp.ddl ++ Lazyappstats.ddl ++ Lazyhistorytopic.ddl ++ Lazytopic.ddl ++ UAppcomments.ddl ++ UApps.ddl ++ UAppstats.ddl ++ UDevice.ddl ++ VLazyappApppkg.ddl ++ VLazyappApppkgTags.ddl ++ VLazyappTags.ddl
   
   /** Entity class storing rows of table Appcategories
    *  @param id Database column id DBType(BIGINT UNSIGNED), AutoInc, PrimaryKey
@@ -200,10 +202,10 @@ object Tables {
   lazy val Apppkg = new TableQuery(tag => new Apppkg(tag))
   
   /** Entity class storing rows of table Apptags
-   *  @param apppkgId Database column apppkg_id DBType(BIGINT UNSIGNED)
+   *  @param lazyappId Database column lazyapp_id DBType(BIGINT UNSIGNED), AutoInc
    *  @param appcategoriesName Database column appcategories_name DBType(VARCHAR), Length(25,true)
    *  @param weigth Database column weigth DBType(INT) */
-  case class ApptagsRow(apppkgId: Long, appcategoriesName: String, weigth: Int)
+  case class ApptagsRow(lazyappId: Long, appcategoriesName: String, weigth: Int)
   /** GetResult implicit for fetching ApptagsRow objects using plain SQL queries */
   implicit def GetResultApptagsRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Int]): GR[ApptagsRow] = GR{
     prs => import prs._
@@ -211,19 +213,19 @@ object Tables {
   }
   /** Table description of table Apptags. Objects of this class serve as prototypes for rows in queries. */
   class Apptags(_tableTag: Tag) extends Table[ApptagsRow](_tableTag, "Apptags") {
-    def * = (apppkgId, appcategoriesName, weigth) <> (ApptagsRow.tupled, ApptagsRow.unapply)
+    def * = (lazyappId, appcategoriesName, weigth) <> (ApptagsRow.tupled, ApptagsRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (apppkgId.?, appcategoriesName.?, weigth.?).shaped.<>({r=>import r._; _1.map(_=> ApptagsRow.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (lazyappId.?, appcategoriesName.?, weigth.?).shaped.<>({r=>import r._; _1.map(_=> ApptagsRow.tupled((_1.get, _2.get, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
-    /** Database column apppkg_id DBType(BIGINT UNSIGNED) */
-    val apppkgId: Column[Long] = column[Long]("apppkg_id")
+    /** Database column lazyapp_id DBType(BIGINT UNSIGNED), AutoInc */
+    val lazyappId: Column[Long] = column[Long]("lazyapp_id", O.AutoInc)
     /** Database column appcategories_name DBType(VARCHAR), Length(25,true) */
     val appcategoriesName: Column[String] = column[String]("appcategories_name", O.Length(25,varying=true))
     /** Database column weigth DBType(INT) */
     val weigth: Column[Int] = column[Int]("weigth")
     
-    /** Foreign key referencing Lazyapp (database name fk_apppkg_id) */
-    lazy val lazyappFk = foreignKey("fk_apppkg_id", apppkgId, Lazyapp)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing Lazyapp (database name fk_apptags_lazyapp_id) */
+    lazy val lazyappFk = foreignKey("fk_apptags_lazyapp_id", lazyappId, Lazyapp)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
   /** Collection-like TableQuery object for table Apptags */
   lazy val Apptags = new TableQuery(tag => new Apptags(tag))
@@ -271,15 +273,15 @@ object Tables {
    *  @param creation Database column creation DBType(BIGINT)
    *  @param apptype Database column apptype DBType(VARCHAR), Length(25,true)
    *  @param status Database column status DBType(VARCHAR), Length(25,true)
-   *  @param downloadcount Database column downloadcount DBType(INT), Default(None)
-   *  @param installedcount Database column installedcount DBType(INT), Default(None)
-   *  @param commentcount Database column commentcount DBType(INT), Default(None)
+   *  @param tDownloadcount Database column t_downloadcount DBType(INT), Default(None)
+   *  @param tInstalledcount Database column t_installedcount DBType(INT), Default(None)
+   *  @param tCommentcount Database column t_commentcount DBType(INT), Default(None)
    *  @param speitysort Database column speitysort DBType(INT), Default(None)
    *  @param topsort Database column topsort DBType(INT), Default(None)
    *  @param hotsort Database column hotsort DBType(INT), Default(None)
    *  @param othersort Database column othersort DBType(INT), Default(None)
    *  @param updateddate Database column updatedDate DBType(BIGINT) */
-  case class LazyappRow(id: Long, lastApppkgId: Long, appdevId: Long, packagename: String, title: String, icon: String, desc: String, creation: Long, apptype: String, status: String, downloadcount: Option[Int] = None, installedcount: Option[Int] = None, commentcount: Option[Int] = None, speitysort: Option[Int] = None, topsort: Option[Int] = None, hotsort: Option[Int] = None, othersort: Option[Int] = None, updateddate: Long)
+  case class LazyappRow(id: Long, lastApppkgId: Long, appdevId: Long, packagename: String, title: String, icon: String, desc: String, creation: Long, apptype: String, status: String, tDownloadcount: Option[Int] = None, tInstalledcount: Option[Int] = None, tCommentcount: Option[Int] = None, speitysort: Option[Int] = None, topsort: Option[Int] = None, hotsort: Option[Int] = None, othersort: Option[Int] = None, updateddate: Long)
   /** GetResult implicit for fetching LazyappRow objects using plain SQL queries */
   implicit def GetResultLazyappRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[Int]]): GR[LazyappRow] = GR{
     prs => import prs._
@@ -287,9 +289,9 @@ object Tables {
   }
   /** Table description of table Lazyapp. Objects of this class serve as prototypes for rows in queries. */
   class Lazyapp(_tableTag: Tag) extends Table[LazyappRow](_tableTag, "Lazyapp") {
-    def * = (id, lastApppkgId, appdevId, packagename, title, icon, desc, creation, apptype, status, downloadcount, installedcount, commentcount, speitysort, topsort, hotsort, othersort, updateddate) <> (LazyappRow.tupled, LazyappRow.unapply)
+    def * = (id, lastApppkgId, appdevId, packagename, title, icon, desc, creation, apptype, status, tDownloadcount, tInstalledcount, tCommentcount, speitysort, topsort, hotsort, othersort, updateddate) <> (LazyappRow.tupled, LazyappRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, lastApppkgId.?, appdevId.?, packagename.?, title.?, icon.?, desc.?, creation.?, apptype.?, status.?, downloadcount, installedcount, commentcount, speitysort, topsort, hotsort, othersort, updateddate.?).shaped.<>({r=>import r._; _1.map(_=> LazyappRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11, _12, _13, _14, _15, _16, _17, _18.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, lastApppkgId.?, appdevId.?, packagename.?, title.?, icon.?, desc.?, creation.?, apptype.?, status.?, tDownloadcount, tInstalledcount, tCommentcount, speitysort, topsort, hotsort, othersort, updateddate.?).shaped.<>({r=>import r._; _1.map(_=> LazyappRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11, _12, _13, _14, _15, _16, _17, _18.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(BIGINT UNSIGNED), AutoInc, PrimaryKey */
     val id: Column[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
@@ -311,12 +313,12 @@ object Tables {
     val apptype: Column[String] = column[String]("apptype", O.Length(25,varying=true))
     /** Database column status DBType(VARCHAR), Length(25,true) */
     val status: Column[String] = column[String]("status", O.Length(25,varying=true))
-    /** Database column downloadcount DBType(INT), Default(None) */
-    val downloadcount: Column[Option[Int]] = column[Option[Int]]("downloadcount", O.Default(None))
-    /** Database column installedcount DBType(INT), Default(None) */
-    val installedcount: Column[Option[Int]] = column[Option[Int]]("installedcount", O.Default(None))
-    /** Database column commentcount DBType(INT), Default(None) */
-    val commentcount: Column[Option[Int]] = column[Option[Int]]("commentcount", O.Default(None))
+    /** Database column t_downloadcount DBType(INT), Default(None) */
+    val tDownloadcount: Column[Option[Int]] = column[Option[Int]]("t_downloadcount", O.Default(None))
+    /** Database column t_installedcount DBType(INT), Default(None) */
+    val tInstalledcount: Column[Option[Int]] = column[Option[Int]]("t_installedcount", O.Default(None))
+    /** Database column t_commentcount DBType(INT), Default(None) */
+    val tCommentcount: Column[Option[Int]] = column[Option[Int]]("t_commentcount", O.Default(None))
     /** Database column speitysort DBType(INT), Default(None) */
     val speitysort: Column[Option[Int]] = column[Option[Int]]("speitysort", O.Default(None))
     /** Database column topsort DBType(INT), Default(None) */
@@ -575,7 +577,7 @@ object Tables {
    *  @param battery Database column battery DBType(DOUBLE)
    *  @param frequency Database column frequency DBType(INT UNSIGNED)
    *  @param statsdate Database column statsDate DBType(BIGINT) */
-  case class UAppstatsRow(packagename: String, deviceId: Long, cpu: Double, mem: Double, traffic: Double, battery: Double, frequency: Int, var statsdate: Long)
+  case class UAppstatsRow(packagename: String, var deviceId: Long= -1L, cpu: Double, mem: Double, traffic: Double, battery: Double, frequency: Int, var statsdate: Long=0L)
   /** GetResult implicit for fetching UAppstatsRow objects using plain SQL queries */
   implicit def GetResultUAppstatsRow(implicit e0: GR[String], e1: GR[Long], e2: GR[Double], e3: GR[Int]): GR[UAppstatsRow] = GR{
     prs => import prs._
@@ -621,7 +623,7 @@ object Tables {
    *  @param isbind Database column isbind DBType(TINYINT UNSIGNED)
    *  @param phone Database column phone DBType(VARCHAR), Length(20,true)
    *  @param providername Database column providername DBType(VARCHAR), Length(20,true) */
-  case class UDeviceRow(var id: Long, name: String, position: String, var registerdate: Long,var  uuid: String, system: String, producer: String, var isbind: Byte, phone: String, providername: String)
+  case class UDeviceRow(var id: Long, name: String, position: String, var registerdate: Long, var uuid: String, system: String, producer: String, var isbind: Byte, phone: String, providername: String)
   /** GetResult implicit for fetching UDeviceRow objects using plain SQL queries */
   implicit def GetResultUDeviceRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Byte]): GR[UDeviceRow] = GR{
     prs => import prs._
@@ -662,40 +664,23 @@ object Tables {
   /** Collection-like TableQuery object for table UDevice */
   lazy val UDevice = new TableQuery(tag => new UDevice(tag))
   
-  /** Entity class storing rows of table VLazyappTags
-   *  @param id Database column id DBType(BIGINT UNSIGNED), Default(0)
-   *  @param lastApppkgId Database column last_apppkg_id DBType(BIGINT UNSIGNED)
-   *  @param appdevId Database column appdev_id DBType(BIGINT UNSIGNED)
-   *  @param packagename Database column packagename DBType(VARCHAR), Length(100,true)
-   *  @param title Database column title DBType(VARCHAR), Length(30,true)
-   *  @param icon Database column icon DBType(VARCHAR), Length(100,true)
-   *  @param desc Database column desc DBType(VARCHAR), Length(250,true)
-   *  @param creation Database column creation DBType(BIGINT)
-   *  @param apptype Database column apptype DBType(VARCHAR), Length(25,true)
-   *  @param status Database column status DBType(VARCHAR), Length(25,true)
-   *  @param downloadcount Database column downloadcount DBType(INT), Default(None)
-   *  @param installedcount Database column installedcount DBType(INT), Default(None)
-   *  @param commentcount Database column commentcount DBType(INT), Default(None)
-   *  @param speitysort Database column speitysort DBType(INT), Default(None)
-   *  @param topsort Database column topsort DBType(INT), Default(None)
-   *  @param hotsort Database column hotsort DBType(INT), Default(None)
-   *  @param othersort Database column othersort DBType(INT), Default(None)
-   *  @param appcategoriesName Database column appcategories_name DBType(VARCHAR), Length(25,true)
-   *  @param weigth Database column weigth DBType(INT) */
-  case class VLazyappTagsRow(id: Long = 0L, lastApppkgId: Long, appdevId: Long, packagename: String, title: String, icon: String, desc: String, creation: Long, apptype: String, status: String, downloadcount: Option[Int] = None, installedcount: Option[Int] = None, commentcount: Option[Int] = None, speitysort: Option[Int] = None, topsort: Option[Int] = None, hotsort: Option[Int] = None, othersort: Option[Int] = None, appcategoriesName: String, weigth: Int)
-  /** GetResult implicit for fetching VLazyappTagsRow objects using plain SQL queries */
-  implicit def GetResultVLazyappTagsRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[Int]], e3: GR[Int]): GR[VLazyappTagsRow] = GR{
-    prs => import prs._
-    VLazyappTagsRow.tupled((<<[Long], <<[Long], <<[Long], <<[String], <<[String], <<[String], <<[String], <<[Long], <<[String], <<[String], <<?[Int], <<?[Int], <<?[Int], <<?[Int], <<?[Int], <<?[Int], <<?[Int], <<[String], <<[Int]))
+  /** Row type of table VLazyappApppkg */
+  type VLazyappApppkgRow = HCons[Long,HCons[Long,HCons[Long,HCons[String,HCons[String,HCons[String,HCons[String,HCons[Long,HCons[String,HCons[String,HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Long,HCons[Long,HCons[String,HCons[Double,HCons[Long,HCons[String,HCons[String,HCons[Int,HCons[String,HCons[Option[String],HCons[Option[String],HCons[Int,HCons[Int,HCons[Int,HCons[Option[String],HCons[Option[String],HCons[Option[String],HCons[Option[String],HCons[Option[String],HCons[Option[Long],HCons[Option[String],HCons[Long,HCons[Option[String],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HNil]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+  /** Constructor for VLazyappApppkgRow providing default values if available in the database schema. */
+  def VLazyappApppkgRow(lazyappId: Long = 0L, lastApppkgId: Long, appdevId: Long, packagename: String, title: String, icon: String, desc: String, creation: Long, apptype: String, status: String, tDownloadcount: Option[Int] = None, tInstalledcount: Option[Int] = None, tCommentcount: Option[Int] = None, speitysort: Option[Int] = None, topsort: Option[Int] = None, hotsort: Option[Int] = None, othersort: Option[Int] = None, updateddate: Long, apppkgId: Long = 0L, downloadurls: String, pkgsize: Double, apppkgCreation: Long, md5: String, source: String, devcode: Int, versioncode: String, changelogs: Option[String] = None, screenshots: Option[String] = None, maxsdkversion: Int, minsdkversion: Int, targetsdkversion: Int, dangerouspermissions: Option[String] = None, permissionlevel: Option[String] = None, permissionstatement: Option[String] = None, securitydetail: Option[String] = None, securitystatus: Option[String] = None, publishdate: Option[Long] = None, adminmsg: Option[String] = None, lazyadminId: Long, pkgstatus: Option[String] = None, downloadcount: Option[Int] = None, installedcount: Option[Int] = None, dislikescount: Option[Int] = None, likescount: Option[Int] = None, commentcount: Option[Int] = None): VLazyappApppkgRow = {
+    lazyappId :: lastApppkgId :: appdevId :: packagename :: title :: icon :: desc :: creation :: apptype :: status :: tDownloadcount :: tInstalledcount :: tCommentcount :: speitysort :: topsort :: hotsort :: othersort :: updateddate :: apppkgId :: downloadurls :: pkgsize :: apppkgCreation :: md5 :: source :: devcode :: versioncode :: changelogs :: screenshots :: maxsdkversion :: minsdkversion :: targetsdkversion :: dangerouspermissions :: permissionlevel :: permissionstatement :: securitydetail :: securitystatus :: publishdate :: adminmsg :: lazyadminId :: pkgstatus :: downloadcount :: installedcount :: dislikescount :: likescount :: commentcount :: HNil
   }
-  /** Table description of table V_Lazyapp_Tags. Objects of this class serve as prototypes for rows in queries. */
-  class VLazyappTags(_tableTag: Tag) extends Table[VLazyappTagsRow](_tableTag, "V_Lazyapp_Tags") {
-    def * = (id, lastApppkgId, appdevId, packagename, title, icon, desc, creation, apptype, status, downloadcount, installedcount, commentcount, speitysort, topsort, hotsort, othersort, appcategoriesName, weigth) <> (VLazyappTagsRow.tupled, VLazyappTagsRow.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, lastApppkgId.?, appdevId.?, packagename.?, title.?, icon.?, desc.?, creation.?, apptype.?, status.?, downloadcount, installedcount, commentcount, speitysort, topsort, hotsort, othersort, appcategoriesName.?, weigth.?).shaped.<>({r=>import r._; _1.map(_=> VLazyappTagsRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11, _12, _13, _14, _15, _16, _17, _18.get, _19.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+  /** GetResult implicit for fetching VLazyappApppkgRow objects using plain SQL queries */
+  implicit def GetResultVLazyappApppkgRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[Int]], e3: GR[Double], e4: GR[Int], e5: GR[Option[String]], e6: GR[Option[Long]]): GR[VLazyappApppkgRow] = GR{
+    prs => import prs._
+    <<[Long] :: <<[Long] :: <<[Long] :: <<[String] :: <<[String] :: <<[String] :: <<[String] :: <<[Long] :: <<[String] :: <<[String] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<[Long] :: <<[Long] :: <<[String] :: <<[Double] :: <<[Long] :: <<[String] :: <<[String] :: <<[Int] :: <<[String] :: <<?[String] :: <<?[String] :: <<[Int] :: <<[Int] :: <<[Int] :: <<?[String] :: <<?[String] :: <<?[String] :: <<?[String] :: <<?[String] :: <<?[Long] :: <<?[String] :: <<[Long] :: <<?[String] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: HNil
+  }
+  /** Table description of table V_Lazyapp_Apppkg. Objects of this class serve as prototypes for rows in queries. */
+  class VLazyappApppkg(_tableTag: Tag) extends Table[VLazyappApppkgRow](_tableTag, "V_Lazyapp_Apppkg") {
+    def * = lazyappId :: lastApppkgId :: appdevId :: packagename :: title :: icon :: desc :: creation :: apptype :: status :: tDownloadcount :: tInstalledcount :: tCommentcount :: speitysort :: topsort :: hotsort :: othersort :: updateddate :: apppkgId :: downloadurls :: pkgsize :: apppkgCreation :: md5 :: source :: devcode :: versioncode :: changelogs :: screenshots :: maxsdkversion :: minsdkversion :: targetsdkversion :: dangerouspermissions :: permissionlevel :: permissionstatement :: securitydetail :: securitystatus :: publishdate :: adminmsg :: lazyadminId :: pkgstatus :: downloadcount :: installedcount :: dislikescount :: likescount :: commentcount :: HNil
     
-    /** Database column id DBType(BIGINT UNSIGNED), Default(0) */
-    val id: Column[Long] = column[Long]("id", O.Default(0L))
+    /** Database column lazyapp_id DBType(BIGINT UNSIGNED), Default(0) */
+    val lazyappId: Column[Long] = column[Long]("lazyapp_id", O.Default(0L))
     /** Database column last_apppkg_id DBType(BIGINT UNSIGNED) */
     val lastApppkgId: Column[Long] = column[Long]("last_apppkg_id")
     /** Database column appdev_id DBType(BIGINT UNSIGNED) */
@@ -714,12 +699,12 @@ object Tables {
     val apptype: Column[String] = column[String]("apptype", O.Length(25,varying=true))
     /** Database column status DBType(VARCHAR), Length(25,true) */
     val status: Column[String] = column[String]("status", O.Length(25,varying=true))
-    /** Database column downloadcount DBType(INT), Default(None) */
-    val downloadcount: Column[Option[Int]] = column[Option[Int]]("downloadcount", O.Default(None))
-    /** Database column installedcount DBType(INT), Default(None) */
-    val installedcount: Column[Option[Int]] = column[Option[Int]]("installedcount", O.Default(None))
-    /** Database column commentcount DBType(INT), Default(None) */
-    val commentcount: Column[Option[Int]] = column[Option[Int]]("commentcount", O.Default(None))
+    /** Database column t_downloadcount DBType(INT), Default(None) */
+    val tDownloadcount: Column[Option[Int]] = column[Option[Int]]("t_downloadcount", O.Default(None))
+    /** Database column t_installedcount DBType(INT), Default(None) */
+    val tInstalledcount: Column[Option[Int]] = column[Option[Int]]("t_installedcount", O.Default(None))
+    /** Database column t_commentcount DBType(INT), Default(None) */
+    val tCommentcount: Column[Option[Int]] = column[Option[Int]]("t_commentcount", O.Default(None))
     /** Database column speitysort DBType(INT), Default(None) */
     val speitysort: Column[Option[Int]] = column[Option[Int]]("speitysort", O.Default(None))
     /** Database column topsort DBType(INT), Default(None) */
@@ -728,6 +713,248 @@ object Tables {
     val hotsort: Column[Option[Int]] = column[Option[Int]]("hotsort", O.Default(None))
     /** Database column othersort DBType(INT), Default(None) */
     val othersort: Column[Option[Int]] = column[Option[Int]]("othersort", O.Default(None))
+    /** Database column updatedDate DBType(BIGINT) */
+    val updateddate: Column[Long] = column[Long]("updatedDate")
+    /** Database column apppkg_id DBType(BIGINT UNSIGNED), Default(0) */
+    val apppkgId: Column[Long] = column[Long]("apppkg_id", O.Default(0L))
+    /** Database column downloadurls DBType(VARCHAR), Length(200,true) */
+    val downloadurls: Column[String] = column[String]("downloadurls", O.Length(200,varying=true))
+    /** Database column pkgsize DBType(DOUBLE) */
+    val pkgsize: Column[Double] = column[Double]("pkgsize")
+    /** Database column apppkg_creation DBType(BIGINT) */
+    val apppkgCreation: Column[Long] = column[Long]("apppkg_creation")
+    /** Database column md5 DBType(VARCHAR), Length(50,true) */
+    val md5: Column[String] = column[String]("md5", O.Length(50,varying=true))
+    /** Database column source DBType(VARCHAR), Length(100,true) */
+    val source: Column[String] = column[String]("source", O.Length(100,varying=true))
+    /** Database column devcode DBType(INT) */
+    val devcode: Column[Int] = column[Int]("devcode")
+    /** Database column versioncode DBType(VARCHAR), Length(25,true) */
+    val versioncode: Column[String] = column[String]("versioncode", O.Length(25,varying=true))
+    /** Database column changelogs DBType(VARCHAR), Length(250,true), Default(None) */
+    val changelogs: Column[Option[String]] = column[Option[String]]("changelogs", O.Length(250,varying=true), O.Default(None))
+    /** Database column screenshots DBType(VARCHAR), Length(400,true), Default(None) */
+    val screenshots: Column[Option[String]] = column[Option[String]]("screenshots", O.Length(400,varying=true), O.Default(None))
+    /** Database column maxsdkversion DBType(INT) */
+    val maxsdkversion: Column[Int] = column[Int]("maxsdkversion")
+    /** Database column minsdkversion DBType(INT) */
+    val minsdkversion: Column[Int] = column[Int]("minsdkversion")
+    /** Database column targetsdkversion DBType(INT) */
+    val targetsdkversion: Column[Int] = column[Int]("targetsdkversion")
+    /** Database column dangerousPermissions DBType(VARCHAR), Length(250,true), Default(None) */
+    val dangerouspermissions: Column[Option[String]] = column[Option[String]]("dangerousPermissions", O.Length(250,varying=true), O.Default(None))
+    /** Database column permissionLevel DBType(VARCHAR), Length(20,true), Default(None) */
+    val permissionlevel: Column[Option[String]] = column[Option[String]]("permissionLevel", O.Length(20,varying=true), O.Default(None))
+    /** Database column permissionStatement DBType(VARCHAR), Length(20,true), Default(None) */
+    val permissionstatement: Column[Option[String]] = column[Option[String]]("permissionStatement", O.Length(20,varying=true), O.Default(None))
+    /** Database column securityDetail DBType(VARCHAR), Length(200,true), Default(None) */
+    val securitydetail: Column[Option[String]] = column[Option[String]]("securityDetail", O.Length(200,varying=true), O.Default(None))
+    /** Database column securitystatus DBType(VARCHAR), Length(25,true), Default(None) */
+    val securitystatus: Column[Option[String]] = column[Option[String]]("securitystatus", O.Length(25,varying=true), O.Default(None))
+    /** Database column publishDate DBType(BIGINT), Default(None) */
+    val publishdate: Column[Option[Long]] = column[Option[Long]]("publishDate", O.Default(None))
+    /** Database column adminmsg DBType(VARCHAR), Length(250,true), Default(None) */
+    val adminmsg: Column[Option[String]] = column[Option[String]]("adminmsg", O.Length(250,varying=true), O.Default(None))
+    /** Database column lazyadmin_id DBType(BIGINT) */
+    val lazyadminId: Column[Long] = column[Long]("lazyadmin_id")
+    /** Database column pkgstatus DBType(VARCHAR), Length(25,true), Default(None) */
+    val pkgstatus: Column[Option[String]] = column[Option[String]]("pkgstatus", O.Length(25,varying=true), O.Default(None))
+    /** Database column downloadcount DBType(INT), Default(None) */
+    val downloadcount: Column[Option[Int]] = column[Option[Int]]("downloadcount", O.Default(None))
+    /** Database column installedcount DBType(INT), Default(None) */
+    val installedcount: Column[Option[Int]] = column[Option[Int]]("installedcount", O.Default(None))
+    /** Database column dislikesCount DBType(INT), Default(None) */
+    val dislikescount: Column[Option[Int]] = column[Option[Int]]("dislikesCount", O.Default(None))
+    /** Database column likesCount DBType(INT), Default(None) */
+    val likescount: Column[Option[Int]] = column[Option[Int]]("likesCount", O.Default(None))
+    /** Database column commentCount DBType(INT), Default(None) */
+    val commentcount: Column[Option[Int]] = column[Option[Int]]("commentCount", O.Default(None))
+  }
+  /** Collection-like TableQuery object for table VLazyappApppkg */
+  lazy val VLazyappApppkg = new TableQuery(tag => new VLazyappApppkg(tag))
+  
+  /** Row type of table VLazyappApppkgTags */
+  type VLazyappApppkgTagsRow = HCons[Long,HCons[Long,HCons[Long,HCons[String,HCons[String,HCons[String,HCons[String,HCons[Long,HCons[String,HCons[String,HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Long,HCons[Long,HCons[String,HCons[Double,HCons[Long,HCons[String,HCons[String,HCons[Int,HCons[String,HCons[Option[String],HCons[Option[String],HCons[Int,HCons[Int,HCons[Int,HCons[Option[String],HCons[Option[String],HCons[Option[String],HCons[Option[String],HCons[Option[String],HCons[Option[Long],HCons[Option[String],HCons[Long,HCons[Option[String],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[Option[Int],HCons[String,HCons[Int,HNil]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+  /** Constructor for VLazyappApppkgTagsRow providing default values if available in the database schema. */
+  def VLazyappApppkgTagsRow(lazyappId: Long = 0L, lastApppkgId: Long, appdevId: Long, packagename: String, title: String, icon: String, desc: String, creation: Long, apptype: String, status: String, tDownloadcount: Option[Int] = None, tInstalledcount: Option[Int] = None, tCommentcount: Option[Int] = None, speitysort: Option[Int] = None, topsort: Option[Int] = None, hotsort: Option[Int] = None, othersort: Option[Int] = None, updateddate: Long, apppkgId: Long = 0L, downloadurls: String, pkgsize: Double, apppkgCreation: Long, md5: String, source: String, devcode: Int, versioncode: String, changelogs: Option[String] = None, screenshots: Option[String] = None, maxsdkversion: Int, minsdkversion: Int, targetsdkversion: Int, dangerouspermissions: Option[String] = None, permissionlevel: Option[String] = None, permissionstatement: Option[String] = None, securitydetail: Option[String] = None, securitystatus: Option[String] = None, publishdate: Option[Long] = None, adminmsg: Option[String] = None, lazyadminId: Long, pkgstatus: Option[String] = None, downloadcount: Option[Int] = None, installedcount: Option[Int] = None, dislikescount: Option[Int] = None, likescount: Option[Int] = None, commentcount: Option[Int] = None, appcategoriesName: String, weigth: Int): VLazyappApppkgTagsRow = {
+    lazyappId :: lastApppkgId :: appdevId :: packagename :: title :: icon :: desc :: creation :: apptype :: status :: tDownloadcount :: tInstalledcount :: tCommentcount :: speitysort :: topsort :: hotsort :: othersort :: updateddate :: apppkgId :: downloadurls :: pkgsize :: apppkgCreation :: md5 :: source :: devcode :: versioncode :: changelogs :: screenshots :: maxsdkversion :: minsdkversion :: targetsdkversion :: dangerouspermissions :: permissionlevel :: permissionstatement :: securitydetail :: securitystatus :: publishdate :: adminmsg :: lazyadminId :: pkgstatus :: downloadcount :: installedcount :: dislikescount :: likescount :: commentcount :: appcategoriesName :: weigth :: HNil
+  }
+  /** GetResult implicit for fetching VLazyappApppkgTagsRow objects using plain SQL queries */
+  implicit def GetResultVLazyappApppkgTagsRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[Int]], e3: GR[Double], e4: GR[Int], e5: GR[Option[String]], e6: GR[Option[Long]]): GR[VLazyappApppkgTagsRow] = GR{
+    prs => import prs._
+    <<[Long] :: <<[Long] :: <<[Long] :: <<[String] :: <<[String] :: <<[String] :: <<[String] :: <<[Long] :: <<[String] :: <<[String] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<[Long] :: <<[Long] :: <<[String] :: <<[Double] :: <<[Long] :: <<[String] :: <<[String] :: <<[Int] :: <<[String] :: <<?[String] :: <<?[String] :: <<[Int] :: <<[Int] :: <<[Int] :: <<?[String] :: <<?[String] :: <<?[String] :: <<?[String] :: <<?[String] :: <<?[Long] :: <<?[String] :: <<[Long] :: <<?[String] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<?[Int] :: <<[String] :: <<[Int] :: HNil
+  }
+  /** Table description of table V_Lazyapp_Apppkg_Tags. Objects of this class serve as prototypes for rows in queries. */
+  class VLazyappApppkgTags(_tableTag: Tag) extends Table[VLazyappApppkgTagsRow](_tableTag, "V_Lazyapp_Apppkg_Tags") {
+    def * = lazyappId :: lastApppkgId :: appdevId :: packagename :: title :: icon :: desc :: creation :: apptype :: status :: tDownloadcount :: tInstalledcount :: tCommentcount :: speitysort :: topsort :: hotsort :: othersort :: updateddate :: apppkgId :: downloadurls :: pkgsize :: apppkgCreation :: md5 :: source :: devcode :: versioncode :: changelogs :: screenshots :: maxsdkversion :: minsdkversion :: targetsdkversion :: dangerouspermissions :: permissionlevel :: permissionstatement :: securitydetail :: securitystatus :: publishdate :: adminmsg :: lazyadminId :: pkgstatus :: downloadcount :: installedcount :: dislikescount :: likescount :: commentcount :: appcategoriesName :: weigth :: HNil
+    
+    /** Database column lazyapp_id DBType(BIGINT UNSIGNED), Default(0) */
+    val lazyappId: Column[Long] = column[Long]("lazyapp_id", O.Default(0L))
+    /** Database column last_apppkg_id DBType(BIGINT UNSIGNED) */
+    val lastApppkgId: Column[Long] = column[Long]("last_apppkg_id")
+    /** Database column appdev_id DBType(BIGINT UNSIGNED) */
+    val appdevId: Column[Long] = column[Long]("appdev_id")
+    /** Database column packagename DBType(VARCHAR), Length(100,true) */
+    val packagename: Column[String] = column[String]("packagename", O.Length(100,varying=true))
+    /** Database column title DBType(VARCHAR), Length(30,true) */
+    val title: Column[String] = column[String]("title", O.Length(30,varying=true))
+    /** Database column icon DBType(VARCHAR), Length(100,true) */
+    val icon: Column[String] = column[String]("icon", O.Length(100,varying=true))
+    /** Database column desc DBType(VARCHAR), Length(250,true) */
+    val desc: Column[String] = column[String]("desc", O.Length(250,varying=true))
+    /** Database column creation DBType(BIGINT) */
+    val creation: Column[Long] = column[Long]("creation")
+    /** Database column apptype DBType(VARCHAR), Length(25,true) */
+    val apptype: Column[String] = column[String]("apptype", O.Length(25,varying=true))
+    /** Database column status DBType(VARCHAR), Length(25,true) */
+    val status: Column[String] = column[String]("status", O.Length(25,varying=true))
+    /** Database column t_downloadcount DBType(INT), Default(None) */
+    val tDownloadcount: Column[Option[Int]] = column[Option[Int]]("t_downloadcount", O.Default(None))
+    /** Database column t_installedcount DBType(INT), Default(None) */
+    val tInstalledcount: Column[Option[Int]] = column[Option[Int]]("t_installedcount", O.Default(None))
+    /** Database column t_commentcount DBType(INT), Default(None) */
+    val tCommentcount: Column[Option[Int]] = column[Option[Int]]("t_commentcount", O.Default(None))
+    /** Database column speitysort DBType(INT), Default(None) */
+    val speitysort: Column[Option[Int]] = column[Option[Int]]("speitysort", O.Default(None))
+    /** Database column topsort DBType(INT), Default(None) */
+    val topsort: Column[Option[Int]] = column[Option[Int]]("topsort", O.Default(None))
+    /** Database column hotsort DBType(INT), Default(None) */
+    val hotsort: Column[Option[Int]] = column[Option[Int]]("hotsort", O.Default(None))
+    /** Database column othersort DBType(INT), Default(None) */
+    val othersort: Column[Option[Int]] = column[Option[Int]]("othersort", O.Default(None))
+    /** Database column updatedDate DBType(BIGINT) */
+    val updateddate: Column[Long] = column[Long]("updatedDate")
+    /** Database column apppkg_id DBType(BIGINT UNSIGNED), Default(0) */
+    val apppkgId: Column[Long] = column[Long]("apppkg_id", O.Default(0L))
+    /** Database column downloadurls DBType(VARCHAR), Length(200,true) */
+    val downloadurls: Column[String] = column[String]("downloadurls", O.Length(200,varying=true))
+    /** Database column pkgsize DBType(DOUBLE) */
+    val pkgsize: Column[Double] = column[Double]("pkgsize")
+    /** Database column apppkg_creation DBType(BIGINT) */
+    val apppkgCreation: Column[Long] = column[Long]("apppkg_creation")
+    /** Database column md5 DBType(VARCHAR), Length(50,true) */
+    val md5: Column[String] = column[String]("md5", O.Length(50,varying=true))
+    /** Database column source DBType(VARCHAR), Length(100,true) */
+    val source: Column[String] = column[String]("source", O.Length(100,varying=true))
+    /** Database column devcode DBType(INT) */
+    val devcode: Column[Int] = column[Int]("devcode")
+    /** Database column versioncode DBType(VARCHAR), Length(25,true) */
+    val versioncode: Column[String] = column[String]("versioncode", O.Length(25,varying=true))
+    /** Database column changelogs DBType(VARCHAR), Length(250,true), Default(None) */
+    val changelogs: Column[Option[String]] = column[Option[String]]("changelogs", O.Length(250,varying=true), O.Default(None))
+    /** Database column screenshots DBType(VARCHAR), Length(400,true), Default(None) */
+    val screenshots: Column[Option[String]] = column[Option[String]]("screenshots", O.Length(400,varying=true), O.Default(None))
+    /** Database column maxsdkversion DBType(INT) */
+    val maxsdkversion: Column[Int] = column[Int]("maxsdkversion")
+    /** Database column minsdkversion DBType(INT) */
+    val minsdkversion: Column[Int] = column[Int]("minsdkversion")
+    /** Database column targetsdkversion DBType(INT) */
+    val targetsdkversion: Column[Int] = column[Int]("targetsdkversion")
+    /** Database column dangerousPermissions DBType(VARCHAR), Length(250,true), Default(None) */
+    val dangerouspermissions: Column[Option[String]] = column[Option[String]]("dangerousPermissions", O.Length(250,varying=true), O.Default(None))
+    /** Database column permissionLevel DBType(VARCHAR), Length(20,true), Default(None) */
+    val permissionlevel: Column[Option[String]] = column[Option[String]]("permissionLevel", O.Length(20,varying=true), O.Default(None))
+    /** Database column permissionStatement DBType(VARCHAR), Length(20,true), Default(None) */
+    val permissionstatement: Column[Option[String]] = column[Option[String]]("permissionStatement", O.Length(20,varying=true), O.Default(None))
+    /** Database column securityDetail DBType(VARCHAR), Length(200,true), Default(None) */
+    val securitydetail: Column[Option[String]] = column[Option[String]]("securityDetail", O.Length(200,varying=true), O.Default(None))
+    /** Database column securitystatus DBType(VARCHAR), Length(25,true), Default(None) */
+    val securitystatus: Column[Option[String]] = column[Option[String]]("securitystatus", O.Length(25,varying=true), O.Default(None))
+    /** Database column publishDate DBType(BIGINT), Default(None) */
+    val publishdate: Column[Option[Long]] = column[Option[Long]]("publishDate", O.Default(None))
+    /** Database column adminmsg DBType(VARCHAR), Length(250,true), Default(None) */
+    val adminmsg: Column[Option[String]] = column[Option[String]]("adminmsg", O.Length(250,varying=true), O.Default(None))
+    /** Database column lazyadmin_id DBType(BIGINT) */
+    val lazyadminId: Column[Long] = column[Long]("lazyadmin_id")
+    /** Database column pkgstatus DBType(VARCHAR), Length(25,true), Default(None) */
+    val pkgstatus: Column[Option[String]] = column[Option[String]]("pkgstatus", O.Length(25,varying=true), O.Default(None))
+    /** Database column downloadcount DBType(INT), Default(None) */
+    val downloadcount: Column[Option[Int]] = column[Option[Int]]("downloadcount", O.Default(None))
+    /** Database column installedcount DBType(INT), Default(None) */
+    val installedcount: Column[Option[Int]] = column[Option[Int]]("installedcount", O.Default(None))
+    /** Database column dislikesCount DBType(INT), Default(None) */
+    val dislikescount: Column[Option[Int]] = column[Option[Int]]("dislikesCount", O.Default(None))
+    /** Database column likesCount DBType(INT), Default(None) */
+    val likescount: Column[Option[Int]] = column[Option[Int]]("likesCount", O.Default(None))
+    /** Database column commentCount DBType(INT), Default(None) */
+    val commentcount: Column[Option[Int]] = column[Option[Int]]("commentCount", O.Default(None))
+    /** Database column appcategories_name DBType(VARCHAR), Length(25,true) */
+    val appcategoriesName: Column[String] = column[String]("appcategories_name", O.Length(25,varying=true))
+    /** Database column weigth DBType(INT) */
+    val weigth: Column[Int] = column[Int]("weigth")
+  }
+  /** Collection-like TableQuery object for table VLazyappApppkgTags */
+  lazy val VLazyappApppkgTags = new TableQuery(tag => new VLazyappApppkgTags(tag))
+  
+  /** Entity class storing rows of table VLazyappTags
+   *  @param lazyappId Database column lazyapp_id DBType(BIGINT UNSIGNED), Default(0)
+   *  @param lastApppkgId Database column last_apppkg_id DBType(BIGINT UNSIGNED)
+   *  @param appdevId Database column appdev_id DBType(BIGINT UNSIGNED)
+   *  @param packagename Database column packagename DBType(VARCHAR), Length(100,true)
+   *  @param title Database column title DBType(VARCHAR), Length(30,true)
+   *  @param icon Database column icon DBType(VARCHAR), Length(100,true)
+   *  @param desc Database column desc DBType(VARCHAR), Length(250,true)
+   *  @param creation Database column creation DBType(BIGINT)
+   *  @param apptype Database column apptype DBType(VARCHAR), Length(25,true)
+   *  @param status Database column status DBType(VARCHAR), Length(25,true)
+   *  @param tDownloadcount Database column t_downloadcount DBType(INT), Default(None)
+   *  @param tInstalledcount Database column t_installedcount DBType(INT), Default(None)
+   *  @param tCommentcount Database column t_commentcount DBType(INT), Default(None)
+   *  @param speitysort Database column speitysort DBType(INT), Default(None)
+   *  @param topsort Database column topsort DBType(INT), Default(None)
+   *  @param hotsort Database column hotsort DBType(INT), Default(None)
+   *  @param othersort Database column othersort DBType(INT), Default(None)
+   *  @param updateddate Database column updatedDate DBType(BIGINT)
+   *  @param appcategoriesName Database column appcategories_name DBType(VARCHAR), Length(25,true)
+   *  @param weigth Database column weigth DBType(INT) */
+  case class VLazyappTagsRow(lazyappId: Long = 0L, lastApppkgId: Long, appdevId: Long, packagename: String, title: String, icon: String, desc: String, creation: Long, apptype: String, status: String, tDownloadcount: Option[Int] = None, tInstalledcount: Option[Int] = None, tCommentcount: Option[Int] = None, speitysort: Option[Int] = None, topsort: Option[Int] = None, hotsort: Option[Int] = None, othersort: Option[Int] = None, updateddate: Long, appcategoriesName: String, weigth: Int)
+  /** GetResult implicit for fetching VLazyappTagsRow objects using plain SQL queries */
+  implicit def GetResultVLazyappTagsRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[Int]], e3: GR[Int]): GR[VLazyappTagsRow] = GR{
+    prs => import prs._
+    VLazyappTagsRow.tupled((<<[Long], <<[Long], <<[Long], <<[String], <<[String], <<[String], <<[String], <<[Long], <<[String], <<[String], <<?[Int], <<?[Int], <<?[Int], <<?[Int], <<?[Int], <<?[Int], <<?[Int], <<[Long], <<[String], <<[Int]))
+  }
+  /** Table description of table V_Lazyapp_Tags. Objects of this class serve as prototypes for rows in queries. */
+  class VLazyappTags(_tableTag: Tag) extends Table[VLazyappTagsRow](_tableTag, "V_Lazyapp_Tags") {
+    def * = (lazyappId, lastApppkgId, appdevId, packagename, title, icon, desc, creation, apptype, status, tDownloadcount, tInstalledcount, tCommentcount, speitysort, topsort, hotsort, othersort, updateddate, appcategoriesName, weigth) <> (VLazyappTagsRow.tupled, VLazyappTagsRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (lazyappId.?, lastApppkgId.?, appdevId.?, packagename.?, title.?, icon.?, desc.?, creation.?, apptype.?, status.?, tDownloadcount, tInstalledcount, tCommentcount, speitysort, topsort, hotsort, othersort, updateddate.?, appcategoriesName.?, weigth.?).shaped.<>({r=>import r._; _1.map(_=> VLazyappTagsRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9.get, _10.get, _11, _12, _13, _14, _15, _16, _17, _18.get, _19.get, _20.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    
+    /** Database column lazyapp_id DBType(BIGINT UNSIGNED), Default(0) */
+    val lazyappId: Column[Long] = column[Long]("lazyapp_id", O.Default(0L))
+    /** Database column last_apppkg_id DBType(BIGINT UNSIGNED) */
+    val lastApppkgId: Column[Long] = column[Long]("last_apppkg_id")
+    /** Database column appdev_id DBType(BIGINT UNSIGNED) */
+    val appdevId: Column[Long] = column[Long]("appdev_id")
+    /** Database column packagename DBType(VARCHAR), Length(100,true) */
+    val packagename: Column[String] = column[String]("packagename", O.Length(100,varying=true))
+    /** Database column title DBType(VARCHAR), Length(30,true) */
+    val title: Column[String] = column[String]("title", O.Length(30,varying=true))
+    /** Database column icon DBType(VARCHAR), Length(100,true) */
+    val icon: Column[String] = column[String]("icon", O.Length(100,varying=true))
+    /** Database column desc DBType(VARCHAR), Length(250,true) */
+    val desc: Column[String] = column[String]("desc", O.Length(250,varying=true))
+    /** Database column creation DBType(BIGINT) */
+    val creation: Column[Long] = column[Long]("creation")
+    /** Database column apptype DBType(VARCHAR), Length(25,true) */
+    val apptype: Column[String] = column[String]("apptype", O.Length(25,varying=true))
+    /** Database column status DBType(VARCHAR), Length(25,true) */
+    val status: Column[String] = column[String]("status", O.Length(25,varying=true))
+    /** Database column t_downloadcount DBType(INT), Default(None) */
+    val tDownloadcount: Column[Option[Int]] = column[Option[Int]]("t_downloadcount", O.Default(None))
+    /** Database column t_installedcount DBType(INT), Default(None) */
+    val tInstalledcount: Column[Option[Int]] = column[Option[Int]]("t_installedcount", O.Default(None))
+    /** Database column t_commentcount DBType(INT), Default(None) */
+    val tCommentcount: Column[Option[Int]] = column[Option[Int]]("t_commentcount", O.Default(None))
+    /** Database column speitysort DBType(INT), Default(None) */
+    val speitysort: Column[Option[Int]] = column[Option[Int]]("speitysort", O.Default(None))
+    /** Database column topsort DBType(INT), Default(None) */
+    val topsort: Column[Option[Int]] = column[Option[Int]]("topsort", O.Default(None))
+    /** Database column hotsort DBType(INT), Default(None) */
+    val hotsort: Column[Option[Int]] = column[Option[Int]]("hotsort", O.Default(None))
+    /** Database column othersort DBType(INT), Default(None) */
+    val othersort: Column[Option[Int]] = column[Option[Int]]("othersort", O.Default(None))
+    /** Database column updatedDate DBType(BIGINT) */
+    val updateddate: Column[Long] = column[Long]("updatedDate")
     /** Database column appcategories_name DBType(VARCHAR), Length(25,true) */
     val appcategoriesName: Column[String] = column[String]("appcategories_name", O.Length(25,varying=true))
     /** Database column weigth DBType(INT) */

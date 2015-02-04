@@ -15,15 +15,6 @@ import scala.collection.mutable.Map
 object RouterController {
   val r_start_url="^/lazystore/v1"
 
-//  /* App查询相关路由*/
-//  val r_apps_speity_url=s"$r_start_url/apps\\.speity"
-//  val r_apps_tag_speity_url=s"$r_start_url/apps\\.t_speity"
-//  val r_apps_top_total_url=s"$r_start_url/apps\\.top"
-//  val r_apps_hot_top_url=s"$r_start_url/apps\\.hot"
-//  val r_apps_tag_new_url=s"$r_start_url/apps\\.new"
-//  val r_apps_similar_url=s"$r_start_url/apps\\.similar"
-//  val r_apps_search1_url=s"$r_start_url/apps\\.search1"
-
   val r_apps_page_search_url=r_start_url+"/apps\\.(\\w+)"
   val r_topic_url=s"$r_start_url/topic"
   val r_categories_url=s"$r_start_url/category"
@@ -62,9 +53,9 @@ object RouterController {
 
   //创建设备信息
   routers+=((HttpMethod.PUT->r_device_url)->DevicePutAction)
-
   //上传设备端app的统计信息
   routers+=((HttpMethod.PUT->r_stats_url)->StatsPutAction)
+
 
   def filterRouter(request:RestRequest)={
     routers.filter{router=>
@@ -72,19 +63,4 @@ object RouterController {
       else false
     }
   }
-
-//  def main(args:Array[String]): Unit ={
-//    val request=Request()
-//    request.setUri(s"/lazystore/v1/comment")
-//    request.setMethod(HttpMethod.PUT)
-//    request.headers().set("Client_Id",UUID.randomUUID().toString)
-//    val restRequest=RestRequest(request)
-//    val routers=filterRouter(restRequest)
-//    println(s"routers=${routers.size}")
-//    if(routers.isEmpty) println("Empty!")
-//    else println("not Empty!")
-//
-//  }
-
-
 }

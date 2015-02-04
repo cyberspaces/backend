@@ -13,10 +13,6 @@ import org.jboss.netty.handler.codec.http.HttpMethod
  * 设备相关
  */
 object DevicePutAction extends RestAction[RestRequest,ResponseContent] {
-  override def apply(request: RestRequest): ResponseContent = {
-    request.method match {
-      case HttpMethod.PUT => ClientDeviceService.AddClientDeviceService(request)
-      case _ => throw new RestException(RestResponseInlineCode.no_such_method, "no such method find!")
-    }
-  }
+  override def apply(request: RestRequest): ResponseContent = ClientDeviceService.AddClientDeviceService(request)
+
 }

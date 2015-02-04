@@ -67,6 +67,8 @@ object UserCommentDao {
       case None=>s"*,$c_uappcomments_commentDate as sid"
     }
 
+
+    if(request.start <=0) request.start=new Date().getTime
     val apkid=request.condition match{
       case Some(id)=>
       case None=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"无效的id")

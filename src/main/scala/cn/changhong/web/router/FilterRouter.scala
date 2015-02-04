@@ -41,9 +41,11 @@ object ExceptionFilterService extends SimpleFilter[Request,Response]{
     service(request) handle{
       case ex:RestException=>
         val content=RestResponseContent(ex.code,ex.message)
+        errorLog.error("FullErrorStack",ex)
         DefaultHttpResponse.createResponse(content,None)
       case ex:TimeoutException=>
         val content=RestResponseContent(RestResponseInlineCode.service_execution_timeout,"服务器运行超时,请稍后重试")
+        errorLog.error("FullErrorStack",ex)
         DefaultHttpResponse.createResponse(content,None)
       case ex:Throwable=>
         val content=RestResponseContent(RestResponseInlineCode.service_inline_cause,ex.getMessage)

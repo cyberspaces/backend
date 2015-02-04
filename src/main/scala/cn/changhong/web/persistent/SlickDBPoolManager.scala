@@ -10,13 +10,13 @@ object SlickDBPoolManager {
   val DBPool={
     val ds=new BasicDataSource
     ds.setDriverClassName("com.mysql.jdbc.Driver")
-    ds.setUsername("yangguo")
-    ds.setPassword("123456")
+    ds.setUsername("appdev")
+    ds.setPassword("appdev")
     ds.setMaxActive(20)
     ds.setMaxIdle(10)
     ds.setInitialSize(5)
     ds.setTestOnBorrow(true)
-    ds.setUrl("jdbc:mysql://localhost:3306/crazycat")
+    ds.setUrl("jdbc:mysql://10.9.52.31:13306/lazystore")
     ds.setMaxWait(1)
     Database.forDataSource(ds)
   }

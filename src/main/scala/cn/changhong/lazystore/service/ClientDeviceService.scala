@@ -1,5 +1,6 @@
 package cn.changhong.lazystore.service
 
+import cn.changhong.lazystore.persistent.T.Tables.UAppstatsRow
 import cn.changhong.lazystore.persistent.dao.ClientDeviceDao
 import cn.changhong.web.util.{ResponseContent, RestRequest}
 
@@ -14,6 +15,7 @@ object ClientDeviceService {
       ResponseContent(content)
     }
   }
+
   object AddClientDeviceCopStats extends AddClientDeviceCopStats with BaseAopService
   private[service] class AddClientDeviceCopStats extends BaseService{
     override def apply(request: RestRequest): ResponseContent = {

@@ -11,30 +11,67 @@ import cn.changhong.lazystore.persistent.T.Tables._
 /**
  * Created by yangguo on 15-1-23.
  */
+case class DeviceAppsStat(deviceId:Long,stats:Array[UAppstatsRow],statsType:String)
+
 object ClientDeviceDao {
-  def addClientDevice(request:RestRequest) ={
-    val device=Parser.UDeviceParser(Parser.ChannelBufferToString(request.underlying.getContent))
-    device.registerdate=new Date().getTime
-    device.id= -1
-    device.uuid=KeyGenerator.createUUID
-    device.isbind=0
+  def addClientDevice(request: RestRequest) = {
+    val device = Parser.UDeviceParser(Parser.ChannelBufferToString(request.underlying.getContent))
+    device.registerdate = new Date().getTime
+    device.id = -1
+    device.uuid = KeyGenerator.createUUID
+    device.isbind = 0
     try {
       SlickDBPoolManager.DBPool.withTransaction { implicit session =>
         (UDevice returning UDevice.map(_.id)).insert(device)
       }
-    }catch{
-      case ex:Exception=>throw new RestException(RestResponseInlineCode.db_executor_error,s"db executor error,${ex.getMessage}")
+    } catch {
+      case ex: Exception => throw new RestException(RestResponseInlineCode.db_executor_error, s"db executor error,${ex.getMessage}")
     }
   }
-  def addClientDeviceCopStats(request:RestRequest)={
-    val stats=Parser.UAppStatsParser(Parser.ChannelBufferToString(request.underlying.getContent))
-    stats.statsdate=new Date().getTime
-    try{
-      SlickDBPoolManager.DBPool.withTransaction{implicit session=>
-        (UAppstats returning UAppstats.map(_.deviceId)).insert(stats)
+
+  def addClientDeviceCopStats(request: RestRequest) = {
+    val deviceStats = Parser.DeviceAppsStatsParser(Parser.ChannelBufferToString(request.underlying.getContent))
+    val date = new Date().getTime()
+    val stats = deviceStats.stats.map { deviceStat =>
+      deviceStat.statsdate = date
+      deviceStat.deviceId = deviceStats.deviceId
+      deviceStat
+    }
+
+    try {
+      val res = SlickDBPoolManager.DBPool.withTransaction { implicit session =>
+        UAppstats.insertAll(stats: _*) //.insert(stats)
       }
-    }catch{
-      case ex:Exception=>throw new RestException(RestResponseInlineCode.db_executor_error,s"db executor error,${ex.getMessage}")
+      res match {
+        case Some(s) => s
+        case _ => 0
+      }
+    } catch {
+      case ex: Exception => throw new RestException(RestResponseInlineCode.db_executor_error, s"db executor error,${ex.getMessage}")
     }
   }
+
+
+  def addClientDeviceCopStats(request: String) = {
+    val deviceStats = Parser.DeviceAppsStatsParser(request) //Parser.ChannelBufferToString(request.underlying.getContent))
+    val date = new Date().getTime()
+    val stats = deviceStats.stats.map { deviceStat =>
+      deviceStat.statsdate = date
+      deviceStat.deviceId = deviceStats.deviceId
+      deviceStat
+    }
+    try {
+      val res = SlickDBPoolManager.DBPool.withTransaction { implicit session =>
+        UAppstats.insertAll(stats: _*) //.insert(stats)
+      }
+      res match {
+        case Some(s) => s
+        case _ => 0
+      }
+    } catch {
+      case ex: Exception => throw new RestException(RestResponseInlineCode.db_executor_error, s"db executor error,${ex.getMessage}")
+    }
+  }
+
+
 }
