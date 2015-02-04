@@ -1,6 +1,7 @@
-package cn.changhong.lazystore.controller
+package cn.changhong.lazystore.service
 
 import cn.changhong.lazystore.persistent.dao.AppTopicDao
+import cn.changhong.lazystore.service.AppsRequest
 import cn.changhong.web.util._
 import org.jboss.netty.handler.codec.http.HttpMethod
 

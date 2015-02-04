@@ -18,7 +18,7 @@ import scala.slick.driver.MySQLDriver.simple._
  */
 object ForeFamilyMemberAction {
   def apply(request:RestRequest):Response={
-    request.path(1) match{
+    request.path match{
       case "members"=>FamilyMembersRouter(request)
       case badRouter=>NotFindActionException(badRouter)
     }
@@ -26,7 +26,7 @@ object ForeFamilyMemberAction {
 }
 private[controller] object FamilyMembersRouter{
   def apply(request:RestRequest): Response ={
-    (request.method,request.path(2)) match{
+    (request.method,request.path) match{
       case (HttpMethod.PUT,"add")=>AddMemberAction(request)
       case (HttpMethod.GET,"gets")=>GetsMemberAction(request)
       case (HttpMethod.GET,"get")=>GetMemberAction(request)

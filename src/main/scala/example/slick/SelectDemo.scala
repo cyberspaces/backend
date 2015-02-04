@@ -1,10 +1,14 @@
 package example.slick
 
-import cn.changhong.lazystore.controller.AppsRequest
 import cn.changhong.lazystore.persistent.dao.{SlickResultString, SlickResultMap}
+import cn.changhong.lazystore.service.AppsRequest
 import cn.changhong.web.persistent.SlickDBPoolManager
 import cn.changhong.web.persistent.Tables.Tables._
 import cn.changhong.web.util.Parser
+import com.twitter.finagle.{Service, Server}
+import com.twitter.finagle.http.{Response,Request}
+import org.jboss.netty.handler.codec.http.HttpMethod
+import scala.collection.mutable
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.PositionedResult
 
@@ -67,6 +71,10 @@ object SelectDemo extends App{
     if(id>0) println(id)
     println(id)
   }
+
+  val map:Map[(HttpMethod,String),Service[Request,Response]]=Map()
+
+
 //  println(Parser.ObjectToJsonString(createQuery()))
 //  println(Parser.ObjectToJsonString(createIndexs(AppsRequest(None,20,20))))
 }

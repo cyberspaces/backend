@@ -1,19 +1,19 @@
-package cn.changhong.lazystore.controller
+package cn.changhong.lazystore.service
 
 import cn.changhong.lazystore.persistent.dao.Appsdao
-import cn.changhong.web.init.GlobalConfigFactory
-import cn.changhong.web.util.{ResponseContent, RestResponseInlineCode, RestException, RestRequest}
+import cn.changhong.lazystore.service.AppsRequest
+import cn.changhong.web.util.{ResponseContent, RestException, RestRequest, RestResponseInlineCode}
 /**
    * Created by yangguo on 15-1-20.
 */
-object AppsService {
+
 
   /**
    * 返回推荐首页APP
    */
   object SpeityAppsService extends SpeityAppsService with BaseAopService
 
-  private[controller] class SpeityAppsService extends BaseService {
+  private[service] class SpeityAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.searchSpeityApps(AppsRequest(request))
       ResponseContent(content)
@@ -26,7 +26,7 @@ object AppsService {
    */
   object HotTopApppsService extends HotTopApppsService with BaseAopService
 
-  private[controller] class HotTopApppsService extends BaseService {
+  private[service] class HotTopApppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.searchTopHotApps(AppsRequest(request))
       ResponseContent(content)
@@ -38,7 +38,7 @@ object AppsService {
    */
   object TotalTopAppsService extends TotalTopAppsService with BaseAopService
 
-  private[controller] class TotalTopAppsService extends BaseService {
+  private[service] class TotalTopAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.searchTopSaleApps(AppsRequest(request))
       ResponseContent(content)
@@ -50,7 +50,7 @@ object AppsService {
    */
   object TagSpeityAppsService extends TagSpeityAppsService with BaseAopService
 
-  private[controller] class TagSpeityAppsService extends BaseService {
+  private[service] class TagSpeityAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val appRequest = AppsRequest(request)
       val content = appRequest.condition match {
@@ -66,7 +66,7 @@ object AppsService {
    */
   object TagTopAppsService extends TagTopAppsService with BaseAopService
 
-  private[controller] class TagTopAppsService extends BaseService {
+  private[service] class TagTopAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val appRequest = AppsRequest(request)
       val content = appRequest.condition match {
@@ -82,7 +82,7 @@ object AppsService {
    */
   object TagNewAppsService extends TagNewAppsService with BaseAopService
 
-  private[controller] class TagNewAppsService extends BaseService {
+  private[service] class TagNewAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val appRequest = AppsRequest(request)
       val content = Appsdao.newAddApps(appRequest)
@@ -95,7 +95,7 @@ object AppsService {
    */
   object AppSimilarService extends AppSimilarService with BaseAopService
 
-  private[controller] class AppSimilarService extends BaseService {
+  private[service] class AppSimilarService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.searchSimilarApps(AppsRequest(request))
       ResponseContent(content)
@@ -107,11 +107,11 @@ object AppsService {
    */
   object SearchAppService extends SearchAppService with BaseAopService
 
-  private[controller] class SearchAppService extends BaseService {
+  private[service] class SearchAppService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.conditionSearchApps(AppsRequest(request))
       ResponseContent(content)
     }
   }
 
-}
+

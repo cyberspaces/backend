@@ -1,6 +1,6 @@
 package cn.changhong.lazystore.persistent.dao
 
-import cn.changhong.lazystore.controller.AppsRequest
+import cn.changhong.lazystore.service.AppsRequest
 import cn.changhong.web.util.{RestResponseInlineCode, RestException}
 
 import SqlProvider._

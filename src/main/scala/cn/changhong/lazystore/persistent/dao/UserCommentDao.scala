@@ -1,10 +1,9 @@
 package cn.changhong.lazystore.persistent.dao
 
 import java.util.Date
-
-import cn.changhong.lazystore.controller.AppsRequest
 import cn.changhong.lazystore.persistent.T.Tables.UAppcommentsRow
 import cn.changhong.lazystore.persistent.T.Tables.UAppcomments
+import cn.changhong.lazystore.service.AppsRequest
 import cn.changhong.web.persistent.SlickDBPoolManager
 import cn.changhong.web.util.{RestResponseInlineCode,  RestException}
 

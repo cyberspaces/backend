@@ -1,8 +1,8 @@
-package cn.changhong.lazystore.controller
+package cn.changhong.lazystore.service
 
 import cn.changhong.lazystore.util.Util
 import cn.changhong.web.init.GlobalConfigFactory
-import cn.changhong.web.util.{RestResponseInlineCode, RestException, RestRequest}
+import cn.changhong.web.util.{RestException, RestRequest, RestResponseInlineCode}
 
 /**
  * Created by yangguo on 15-1-22.

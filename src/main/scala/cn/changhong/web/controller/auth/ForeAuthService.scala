@@ -9,7 +9,7 @@ import cn.changhong.web.util._
  */
 object ForeAuthAction extends RestAction[RestRequest,Response]{
   override def apply(request: RestRequest): Response = {
-    request.path(1) match{
+    request.path match{
       case "app"=>AppAuthAction(request)
       case "user"=>UserAuthAction(request)
       case "3rdpart"=>ThirdPartAuthAction(request)

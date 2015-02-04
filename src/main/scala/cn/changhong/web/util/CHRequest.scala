@@ -22,7 +22,7 @@ object RequestJsonBodyParams{
   def apply[T](json:String)(implicit parse:Parser[T]):T=parse(json)
 }
 case class LogBean(method:String,path:String,requestId:String,clientId:String,st:Long,remoteaddr:String=null,var et:Long=0,var uid:String=null)
-case class RestRequest (method:HttpMethod,path:List[String],urlParams:RestUrlParameters,underlying:HttpRequest,logBean:LogBean)
+case class RestRequest (method:HttpMethod,path:String,urlParams:RestUrlParameters,underlying:HttpRequest,logBean:LogBean,var regex:String="")
 object RestRequest{
   def apply(request:Request): RestRequest ={
     val clientId=request.headers().get("Client_Id")match {
@@ -31,8 +31,7 @@ object RestRequest{
     }
     val method=request.getMethod
     val decoder=new QueryStringDecoder(request.getUri)
-    val path=if(decoder.getPath.equals("/")) List("/")
-      else decoder.getPath.split('/').drop(1).toList
+    val path=decoder.getPath
     val params=new RestUrlParameters(decoder.getParameters)
     val requestId=request.headers().get("Tracker_Id")
     val logBean=LogBean(method.getName,decoder.getPath,requestId,clientId,new Date().getTime,request.remoteHost)

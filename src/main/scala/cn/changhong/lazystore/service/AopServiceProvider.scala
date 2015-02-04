@@ -1,8 +1,7 @@
-package cn.changhong.lazystore.controller
+package cn.changhong.lazystore.service
 
 import cn.changhong.web.init.GlobalConfigFactory
 import cn.changhong.web.util._
-import com.twitter.finagle.http.Response
 import org.slf4j.LoggerFactory
 
 /**

@@ -77,7 +77,7 @@ object ForeRouter extends Service[Request,Response]{
   override def apply(request: Request): Future[Response] = {
     val restRequest=RestRequest(request)
     futurePool {
-      restRequest.path(0) match {
+      restRequest.path match {
         case "auth" => ForeAuthAction(restRequest)
         case "family"=>ForeFamilyMemberAction(restRequest)
         case "user" => NotFindActionException("user")

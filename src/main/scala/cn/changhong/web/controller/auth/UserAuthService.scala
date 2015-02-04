@@ -15,7 +15,7 @@ import cn.changhong.web.persistent.Tables.Tables._
 
 object UserAuthAction extends RestAction[RestRequest,Response]{
   override def apply(request: RestRequest): Response = {
-    (request.method,request.path(2)) match {
+    (request.method,request.path) match {
       case (HttpMethod.POST, "token") => UserTokenAction(request)
       case (HttpMethod.PUT, "register") => UserRegisterTokenAction(request)
       case _ => NotFindActionException(request.underlying.getUri)
