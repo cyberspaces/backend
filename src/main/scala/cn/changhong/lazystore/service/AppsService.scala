@@ -2,11 +2,33 @@ package cn.changhong.lazystore.service
 
 import cn.changhong.lazystore.persistent.dao.Appsdao
 import cn.changhong.lazystore.service.AppsRequest
-import cn.changhong.web.util.{ResponseContent, RestException, RestRequest, RestResponseInlineCode}
+import cn.changhong.web.util._
+import com.twitter.util.{Await, Future}
+
 /**
    * Created by yangguo on 15-1-20.
 */
-
+case class AppInfo(app:String,tags:String)
+object AppGetService extends AppGetService with BaseAopService
+private[service] class AppGetService extends BaseService {
+  override def apply(request: RestRequest): ResponseContent = {
+    val appId=request.path.split("/").last
+    val tasks=Seq( ExecutorProvider.futurePool{
+      Appsdao.getAppInfo(appId,AppsRequest(None,0,0))
+    },ExecutorProvider.futurePool {
+      Appsdao.getAppTags(appId)
+    })
+    val res1=Future.collect(tasks).map{resps=>
+      val list=resps.map(Parser.ObjectToJsonString(_))
+      AppInfo(list(0),list(1))
+    }
+    ResponseContent(try{
+      Await.result(res1)
+    }catch{
+      case ex:Throwable=>throw new RestException(RestResponseInlineCode.service_execution_timeout,s"db executor time out,${ex.getMessage}")
+    })
+  }
+}
 
   /**
    * 返回推荐首页APP

@@ -9,6 +9,9 @@ import cn.changhong.web.util.{RestResponseInlineCode, RestException, ResponseCon
  * Created by yangguo on 15-2-4.
  */
 
+object AppGetAction extends RestAction[RestRequest,ResponseContent]{
+  override def apply(request: RestRequest): ResponseContent = AppGetService(request)
+}
 object AppsQueryAction extends RestAction[RestRequest,ResponseContent]{
 
   override def apply(request: RestRequest): ResponseContent = {

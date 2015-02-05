@@ -43,7 +43,23 @@ object Appsdao {
 
   private[this] val c_apptags_weight="weight"
 
+  private[this] val T_APPTAGS="apptags"
 
+  private[this] val c_lazyapp_id="lazyapp_id"
+
+
+  def getAppInfo(appId:String,request:AppsRequest)={
+    val columns=request.columns match{
+      case Some(s)=>s
+      case _=>"*"
+    }
+    val sql=s"select $columns from $V_LAZYAPP_APPPKG where $c_lazyapp_id = $appId"
+    exec(sql)
+  }
+  def getAppTags(appId:String)={
+    val sql=s"select tag,weight  from $T_APPTAGS where $c_lazyapp_id = $appId order by $c_apptags_weight desc"
+    exec(sql)
+  }
   /**
    * 查询推荐
    * @param request

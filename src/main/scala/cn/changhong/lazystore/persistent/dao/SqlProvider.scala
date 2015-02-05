@@ -13,10 +13,10 @@ object SqlProvider {
   private[dao] def exec(sql:String)={
     try{
       SlickDBPoolManager.DBPool.withSession{implicit session=>
-        sql"#$sql"
+        sql"#$sql".as(SlickResultMap).list
       }
     }catch{
-      case ex => throw new RestException(RestResponseInlineCode.db_executor_error, s"ex.getMessage")
+      case ex => throw new RestException(RestResponseInlineCode.db_executor_error, s"${ex.getMessage}")
     }
   }
 }

@@ -66,8 +66,6 @@ object UserCommentDao {
       case Some(s)=>s"$s,$c_uappcomments_commentDate as sid"
       case None=>s"*,$c_uappcomments_commentDate as sid"
     }
-
-
     if(request.start <=0) request.start=new Date().getTime
     val apkid=request.condition match{
       case Some(id)=>
