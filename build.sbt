@@ -37,4 +37,7 @@ libraryDependencies += "org.specs2" % "specs2_2.10" % "3.0-M2" withSources() wit
 
 libraryDependencies += "org.mongodb" % "casbah_2.10" % "2.8.0-RC2"
 
+libraryDependencies += "nl.razko" %% "scraper" % "0.4.1" withSources() withJavadoc()
+
+
 

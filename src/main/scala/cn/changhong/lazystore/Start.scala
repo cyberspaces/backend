@@ -1,6 +1,7 @@
 package cn.changhong.lazystore
 
 import java.net.InetSocketAddress
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import cn.changhong.lazystore.controller.LazyStoreForeRouter
@@ -29,4 +30,5 @@ object Start {
       .name(args(2))
       .build(service)
   }
+
 }
