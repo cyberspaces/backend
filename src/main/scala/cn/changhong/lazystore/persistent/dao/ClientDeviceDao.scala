@@ -12,6 +12,7 @@ import cn.changhong.lazystore.persistent.T.Tables._
  * Created by yangguo on 15-1-23.
  */
 case class DeviceAppsStat(deviceId:Long,stats:Array[UAppstatsRow],statsType:String)
+case class DeviceApps(uDeviceId:Long,uApps:Array[UAppsRow])
 
 object ClientDeviceDao {
   def addClientDevice(request: RestRequest) = {
@@ -29,6 +30,19 @@ object ClientDeviceDao {
     }
   }
 
+  def addClientDeviceApps(uapps:Array[UAppsRow])={
+    try{
+      SlickDBPoolManager.DBPool.withTransaction{implicit session=>
+        UApps.insertAll(uapps:_*)
+      } match{
+        case Some(count)=>count
+        case _=> 0
+      }
+    }catch {
+      case ex: Exception => throw new RestException(RestResponseInlineCode.db_executor_error, s"db executor error,${ex.getMessage}")
+
+    }
+  }
   def addClientDeviceCopStats(request: RestRequest) = {
     val deviceStats = Parser.DeviceAppsStatsParser(Parser.ChannelBufferToString(request.underlying.getContent))
     val date = new Date().getTime()
@@ -37,12 +51,10 @@ object ClientDeviceDao {
       deviceStat.deviceId = deviceStats.deviceId
       deviceStat
     }
-
     try {
-      val res = SlickDBPoolManager.DBPool.withTransaction { implicit session =>
+      SlickDBPoolManager.DBPool.withTransaction { implicit session =>
         UAppstats.insertAll(stats: _*) //.insert(stats)
-      }
-      res match {
+      } match {
         case Some(s) => s
         case _ => 0
       }

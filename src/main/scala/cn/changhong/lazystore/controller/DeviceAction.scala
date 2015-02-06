@@ -16,3 +16,6 @@ object DevicePutAction extends RestAction[RestRequest,ResponseContent] {
   override def apply(request: RestRequest): ResponseContent = ClientDeviceService.AddClientDeviceService(request)
 
 }
+object DeviceAppsPutAction extends RestAction[RestRequest,ResponseContent]{
+  override def apply(request: RestRequest): ResponseContent =ClientDeviceService.AddClientDeviceAppsService(request)
+}

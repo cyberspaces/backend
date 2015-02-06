@@ -3,7 +3,7 @@ package cn.changhong.web.util
 import java.nio.charset.Charset
 
 import cn.changhong.lazystore.persistent.T.Tables.UAppcommentsRow
-import cn.changhong.lazystore.persistent.dao.DeviceAppsStat
+import cn.changhong.lazystore.persistent.dao.{DeviceApps, DeviceAppsStat}
 import cn.changhong.web.persistent.Tables.Tables.{FamilyMemberRow, UserRow}
 import net.liftweb.json.DefaultFormats
 import net.liftweb.json._
@@ -89,6 +89,15 @@ object Parser {
     override def apply(json: String): DeviceAppsStat = {
       try{
         (parse(json).extract[DeviceAppsStat])
+      }catch{
+        case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
+      }
+    }
+  }
+  object DeviceAppsParser extends Parser[DeviceApps]{
+    override def apply(json: String): DeviceApps = {
+      try{
+        (parse(json).extract[DeviceApps])
       }catch{
         case ex:Throwable=>throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters,json,UserRow.getClass.getName,ex.getMessage)
       }

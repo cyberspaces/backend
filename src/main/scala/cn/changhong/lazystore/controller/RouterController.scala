@@ -29,6 +29,8 @@ object RouterController {
   val r_stats_url=s"$r_start_url/stats"
   val r_app_info_url=s"$r_start_url/apps/(\\w+)"
 
+  val r_user_apps_url=s"$r_start_url/u/apps"
+
   val routers: Map[(HttpMethod, String),RestAction[RestRequest,ResponseContent] ] = Map()
 
   //获取Apps
@@ -59,6 +61,9 @@ object RouterController {
 
   //获取App详细信息
   routers+=((HttpMethod.GET->r_app_info_url)->AppGetAction)
+
+  //上传设备端所有app
+  routers+=((HttpMethod.PUT->r_user_apps_url)->DeviceAppsPutAction)
 
   def filterRouter(request:RestRequest)={
     routers.filter{router=>

@@ -534,7 +534,7 @@ object Tables {
    *  @param versioncode Database column versioncode DBType(VARCHAR), Length(25,true)
    *  @param uDeviceId Database column u_device_id DBType(BIGINT UNSIGNED)
    *  @param updatetime Database column updateTime DBType(BIGINT UNSIGNED) */
-  case class UAppsRow(id: Long, packagename: String, title: String, versioncode: String, uDeviceId: Long, updatetime: Long)
+  case class UAppsRow(var id: Long, packagename: String, title: String, versioncode: String,var  uDeviceId: Long,var  updatetime: Long)
   /** GetResult implicit for fetching UAppsRow objects using plain SQL queries */
   implicit def GetResultUAppsRow(implicit e0: GR[Long], e1: GR[String]): GR[UAppsRow] = GR{
     prs => import prs._
