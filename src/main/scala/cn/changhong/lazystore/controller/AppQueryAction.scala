@@ -15,7 +15,7 @@ object AppGetAction extends RestAction[RestRequest,ResponseContent]{
 object AppsQueryAction extends RestAction[RestRequest,ResponseContent]{
 
   override def apply(request: RestRequest): ResponseContent = {
-   val requestType=request.underlying.getUri.split("\\.").last
+   val requestType=request.path.split("\\.").last
    requestType match{
       case LazyStoreRequestType.speity=>SpeityAppsService(request)
       case LazyStoreRequestType.top_total=>TotalTopAppsService(request)

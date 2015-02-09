@@ -1,5 +1,7 @@
 package cn.changhong.lazystore.persistent.T
 
+import java.util.Date
+
 
 /** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
 object Tables {
@@ -281,7 +283,7 @@ object Tables {
    *  @param hotsort Database column hotsort DBType(INT), Default(None)
    *  @param othersort Database column othersort DBType(INT), Default(None)
    *  @param updateddate Database column updatedDate DBType(BIGINT) */
-  case class LazyappRow(id: Long, lastApppkgId: Long, appdevId: Long, packagename: String, title: String, icon: String, desc: String, creation: Long, apptype: String, status: String, tDownloadcount: Option[Int] = None, tInstalledcount: Option[Int] = None, tCommentcount: Option[Int] = None, speitysort: Option[Int] = None, topsort: Option[Int] = None, hotsort: Option[Int] = None, othersort: Option[Int] = None, updateddate: Long)
+  case class LazyappRow(id: Long, lastApppkgId: Long, appdevId: Long, packagename: String, title: String, icon: String, desc: String, creation: Long, apptype: String, status: String, tDownloadcount: Option[Int] = None, tInstalledcount: Option[Int] = None, tCommentcount: Option[Int] = None, speitysort: Option[Int] = None, topsort: Option[Int] = None, hotsort: Option[Int] = None, othersort: Option[Int] = None, updateddate: Long= new Date().getTime)
   /** GetResult implicit for fetching LazyappRow objects using plain SQL queries */
   implicit def GetResultLazyappRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Option[Int]]): GR[LazyappRow] = GR{
     prs => import prs._

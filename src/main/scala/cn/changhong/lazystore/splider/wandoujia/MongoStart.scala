@@ -99,5 +99,6 @@ object MongoStart extends App{
 //    val cursorDoc=collection.find()
 //    while(cursorDoc.hasNext) println(cursorDoc.next())
   }
+
 }
 

@@ -2,9 +2,12 @@ package cn.changhong.lazystore.persistent.dao
 
 import java.util.Date
 
+import cn.changhong.lazystore.persistent.T.Tables.LazyappRow
 import cn.changhong.lazystore.service.AppsRequest
 import cn.changhong.web.persistent.SlickDBPoolManager
 import cn.changhong.web.util.{RestResponseInlineCode, RestException}
+
+import cn.changhong.lazystore.persistent.T.Tables.Lazyapp
 
 import scala.slick.driver.MySQLDriver.simple._
 
@@ -156,6 +159,16 @@ object Appsdao {
         val sql=s"select $columns from $V_LAZYAPP_APPPKG_TAGS where $where and $c_lazystore_speitysort_index > ${request.start} limit ${request.max}"
         exec(sql)
       case None=> throw new RestException(RestResponseInlineCode.invalid_request_parameters,"请输入需要查询的App")
+    }
+  }
+  def insertApps(lazyApps:Seq[LazyappRow]) ={
+
+    try {
+      SlickDBPoolManager.DBPool.withSession {implicit session=>
+        Lazyapp.insertAll(lazyApps: _*)
+      }
+    }catch{
+      case ex:Throwable=> -1
     }
   }
 }

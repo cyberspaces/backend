@@ -34,15 +34,16 @@ object ErrorLog{
     try{stream.close()}catch{case e=>}
   }
 }
-object StartT extends App{
-  scrape from Google("php elephant") open{implicit  page=>
-    Google.results each{x:Element=>
-      val link=x.select("a[href]").attr("abs:href").substring(28)
-      if(link.isValidURL) scrape from link each(x=>println("found:"+x))
+object StartT extends App {
+  scrape from Google("php elephant") open { implicit page =>
+    Google.results each { x: Element =>
+      val link = x.select("a[href]").attr("abs:href").substring(28)
+      if (link.isValidURL) scrape from link each (x => println("found:" + x))
     }
   }
   run
-  def run= {
+
+  def run = {
     val count = 20
     var start = 0
     val outStream = new FileOutputStream("/Users/yangguo/网络爬虫/豌豆夹/相机.data", true)
@@ -59,7 +60,7 @@ object StartT extends App{
             try {
               val byteArray = new ByteArrayOutputStream()
               Iterator continually (instream.read(buffer)) takeWhile (_ > 0) foreach (byteArray.write(buffer, 0, _))
-//              byteArray.write('\n')
+              //              byteArray.write('\n')
               if (byteArray.size() < 270) {
                 start = -1
                 ErrorLog(url)
@@ -77,9 +78,10 @@ object StartT extends App{
           }
         }
       }
-    }finally {
+    } finally {
       ErrorLog.closeStream(outStream)
       ErrorLog.logIn.flush()
       ErrorLog.closeStream(ErrorLog.logIn)
     }
   }
+}

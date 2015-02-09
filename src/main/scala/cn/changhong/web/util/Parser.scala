@@ -154,7 +154,7 @@ object Parser {
     }
   }
   object ObjectToJsonString{
-    def apply(obj:Any):String= {
+    def apply(obj:AnyRef):String= {
       try {
         compact(render(decompose(obj)))
       } catch {
@@ -185,7 +185,10 @@ object Parser {
     }
   }
   object ObjectToJsonStringToChannelBuffer {
-    def apply(obj: Any) = {
+    def apply(obj: AnyRef) = {
+
+
+
       Parser.StringToChannelBuffer(Parser.ObjectToJsonString(obj))
     }
   }
