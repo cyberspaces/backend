@@ -18,5 +18,6 @@ object SqlProvider {
     }catch{
       case ex => throw new RestException(RestResponseInlineCode.db_executor_error, s"${ex.getMessage}")
     }
+
   }
 }

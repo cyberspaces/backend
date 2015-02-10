@@ -130,24 +130,6 @@ object Parser {
       }
     }
   }
-//  implicit object ClientDeviceParser extends Parser[AppDeviceRow]{
-//    override def apply(json: String): AppDeviceRow = {
-//      try {
-//        (parse(json).extract[AppDeviceRow])
-//      } catch {
-//        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
-//      }
-//    }
-//  }
-//  implicit object ClientDeviceCopStatsParser extends Parser[AppStatRow]{
-//    override def apply(json: String): AppStatRow = {
-//      try {
-//        (parse(json).extract[AppStatRow])
-//      } catch {
-//        case ex: Throwable => throw new InvalidParameterFormatException(RestResponseInlineCode.invalid_request_parameters, json, UserRow.getClass.getName, ex.getMessage)
-//      }
-//    }
-//  }
   object StringToChannelBuffer {
     def apply(json: String) :ChannelBuffer= {
       ChannelBuffers.wrappedBuffer(json.getBytes(Charset.forName("utf8")))

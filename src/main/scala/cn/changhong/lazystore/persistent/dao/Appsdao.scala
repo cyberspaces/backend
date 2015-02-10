@@ -2,12 +2,10 @@ package cn.changhong.lazystore.persistent.dao
 
 import java.util.Date
 
-import cn.changhong.lazystore.persistent.T.Tables.LazyappRow
+import cn.changhong.lazystore.persistent.T.Tables.{ApppkgRow, LazyappRow, Lazyapp,Apppkg}
 import cn.changhong.lazystore.service.AppsRequest
 import cn.changhong.web.persistent.SlickDBPoolManager
 import cn.changhong.web.util.{RestResponseInlineCode, RestException}
-
-import cn.changhong.lazystore.persistent.T.Tables.Lazyapp
 
 import scala.slick.driver.MySQLDriver.simple._
 
@@ -168,7 +166,16 @@ object Appsdao {
         Lazyapp.insertAll(lazyApps: _*)
       }
     }catch{
-      case ex:Throwable=> -1
+      case ex:Exception=>throw new RestException(RestResponseInlineCode.db_executor_error,s"db executor error,${ex.getMessage}")
+    }
+  }
+  def insertAppPkgs(appPkgs:Seq[ApppkgRow])={
+    try{
+      SlickDBPoolManager.DBPool.withSession{implicit session=>
+        Apppkg.insertAll(appPkgs:_*)
+      }
+    }catch{
+      case ex:Exception=>throw new RestException(RestResponseInlineCode.db_executor_error,s"db executor error,${ex.getMessage}")
     }
   }
 }
