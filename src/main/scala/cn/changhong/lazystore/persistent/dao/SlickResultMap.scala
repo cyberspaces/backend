@@ -21,10 +21,14 @@ object SlickResultMap extends GetResult[Map[String,Any]]{
     val cnames=cvalues.getMetaData
     val res = (1 to pr.numColumns).map{ i=>
       val obj=cvalues.getObject(i)
-      cnames.getColumnName(i) -> {
+      val alias=cnames.getColumnName(i) match{
+        case "speitysort" | "topsort" | "hotsort" | "othersort"=>"sid"
+        case s=>s
+      }
+      (alias -> {
         if(obj.isInstanceOf[java.math.BigInteger]) try{obj.toString.toLong}catch{case ex:Throwable=> -1}
         else obj
-      }
+      })
     }
     res.toMap
   }
