@@ -1,6 +1,5 @@
 package cn.changhong.lazystore.controller
 
-import java.util.UUID
 
 import cn.changhong.web.router.RestAction
 import cn.changhong.web.util.{ResponseContent, RestRequest}

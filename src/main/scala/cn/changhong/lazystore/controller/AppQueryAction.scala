@@ -18,13 +18,13 @@ object AppsQueryAction extends RestAction[RestRequest,ResponseContent]{
    val requestType=request.path.split("\\.").last
    requestType match{
       case LazyStoreRequestType.speity=>SpeityAppsService(request)
-      case LazyStoreRequestType.top_total=>TotalTopAppsService(request)
-      case LazyStoreRequestType.top_hot=>HotTopApppsService(request)
-      case LazyStoreRequestType.tag_speity=>TagSpeityAppsService(request)
-      case LazyStoreRequestType.tag_top=>TagTopAppsService(request)
-      case LazyStoreRequestType.tag_new=>TagNewAppsService(request)
-      case LazyStoreRequestType.similar=>AppSimilarService(request)
-      case LazyStoreRequestType.search=>SearchAppService(request)
+      case LazyStoreRequestType.top=>TopAppsService(request)
+      case LazyStoreRequestType.hot=>HotApppsService(request)
+     // case LazyStoreRequestType.tag_speity=>TagSpeityAppsService(request)
+      //case LazyStoreRequestType.tag_top=>TagTopAppsService(request)
+      case LazyStoreRequestType.New=>NewAppsService(request)
+      case LazyStoreRequestType.similar=>SimilarAppsService(request)
+      case LazyStoreRequestType.search=>SearchAppsService(request)
       case s=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,s"Invalid Apps Type [$s]")
     }
   }

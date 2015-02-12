@@ -16,7 +16,7 @@ object SlickDBPoolManager {
     ds.setMaxIdle(10)
     ds.setInitialSize(5)
     ds.setTestOnBorrow(true)
-    ds.setUrl("jdbc:mysql://10.9.52.31:13306/lazystore?characterEncoding=UTF-8")
+    ds.setUrl("jdbc:mysql://10.9.52.31:13306/lazystore?characterEncoding=UTF-8&autoReconnect=true")
     ds.setMaxWait(1)
     Database.forDataSource(ds)
   }

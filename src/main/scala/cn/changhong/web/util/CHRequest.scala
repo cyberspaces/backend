@@ -1,6 +1,6 @@
 package cn.changhong.web.util
 
-import java.util.{Date, UUID}
+import java.util.{Date}
 
 import com.twitter.finagle.http.Request
 import org.jboss.netty.handler.codec.http.{QueryStringDecoder, HttpRequest, HttpMethod}

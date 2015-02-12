@@ -28,6 +28,7 @@ object Start {
       .readTimeout(Duration(5,TimeUnit.SECONDS))
       .bindTo(new InetSocketAddress(GlobalConfigFactory.server_port))
       .name(GlobalConfigFactory.server_name)
+
       .build(service)
   }
 

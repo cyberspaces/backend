@@ -12,6 +12,7 @@ import Q.interpolation
 object SqlProvider {
   private[dao] def exec(sql:String)={
     try{
+      println(sql)
       SlickDBPoolManager.DBPool.withSession{implicit session=>
         sql"#$sql".as(SlickResultMap).list
       }

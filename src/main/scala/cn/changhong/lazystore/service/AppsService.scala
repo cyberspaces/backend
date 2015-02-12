@@ -46,9 +46,9 @@ private[service] class AppGetService extends BaseService {
   /**
    * 热榜
    */
-  object HotTopApppsService extends HotTopApppsService with BaseAopService
+  object HotApppsService extends HotApppsService with BaseAopService
 
-  private[service] class HotTopApppsService extends BaseService {
+  private[service] class HotApppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.searchTopHotApps(AppsRequest(request))
       ResponseContent(content)
@@ -58,9 +58,9 @@ private[service] class AppGetService extends BaseService {
   /**
    * 总排行
    */
-  object TotalTopAppsService extends TotalTopAppsService with BaseAopService
+  object TopAppsService extends TopAppsService with BaseAopService
 
-  private[service] class TotalTopAppsService extends BaseService {
+  private[service] class TopAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.searchTopSaleApps(AppsRequest(request))
       ResponseContent(content)
@@ -102,12 +102,12 @@ private[service] class AppGetService extends BaseService {
   /**
    * 根据分类返回最新添加的APP的服务
    */
-  object TagNewAppsService extends TagNewAppsService with BaseAopService
+  object NewAppsService extends NewAppsService with BaseAopService
 
-  private[service] class TagNewAppsService extends BaseService {
+  private[service] class NewAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val appRequest = AppsRequest(request)
-      val content = Appsdao.newAddApps(appRequest)
+      val content = Appsdao.searchNewApps(appRequest)
       ResponseContent(content)
     }
   }
@@ -115,9 +115,9 @@ private[service] class AppGetService extends BaseService {
   /**
    * 查找与输入APP相似的APP的服务
    */
-  object AppSimilarService extends AppSimilarService with BaseAopService
+  object SimilarAppsService extends SimilarAppsService with BaseAopService
 
-  private[service] class AppSimilarService extends BaseService {
+  private[service] class SimilarAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.searchSimilarApps(AppsRequest(request))
       ResponseContent(content)
@@ -127,9 +127,9 @@ private[service] class AppGetService extends BaseService {
   /**
    * 搜索服务
    */
-  object SearchAppService extends SearchAppService with BaseAopService
+  object SearchAppsService extends SearchAppsService with BaseAopService
 
-  private[service] class SearchAppService extends BaseService {
+  private[service] class SearchAppsService extends BaseService {
     override def apply(request: RestRequest): ResponseContent = {
       val content = Appsdao.conditionSearchApps(AppsRequest(request))
       ResponseContent(content)

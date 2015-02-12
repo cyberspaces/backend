@@ -1,5 +1,7 @@
 package cn.changhong.lazystore.service
 
+import java.net.URLDecoder
+
 import cn.changhong.lazystore.util.Util
 import cn.changhong.web.init.GlobalConfigFactory
 import cn.changhong.web.util.{RestException, RestRequest, RestResponseInlineCode}
@@ -9,6 +11,11 @@ import cn.changhong.web.util.{RestException, RestRequest, RestResponseInlineCode
  */
 case class AppsRequest(var condition:Option[String],var start:Long,var max:Int,columns:Option[String]=None,tag:Option[String]=None)
 object AppsRequest {
+//  private[service] def urlParamsDecoder(params:String)={
+//    val res=URLDecoder.decode(params,"utf-8")
+//    println(params+","+res)
+//    res
+//  }
   def apply(request: RestRequest): AppsRequest = {
     var temp = request.urlParams.all.get(Util.request_key_start)
     val start =

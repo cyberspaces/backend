@@ -61,6 +61,7 @@ object AccessLogFilterService extends SimpleFilter[Request,Response]{
     service.apply(request)
   }
   def createRequestLog(request:Request): Unit ={
+    println(request.getUri())
     val tracker_id=UUID.randomUUID().toString
     request.headers().set("Tracker_Id",tracker_id)
     val value=TrackerInfo(request)
