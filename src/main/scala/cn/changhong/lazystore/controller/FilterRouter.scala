@@ -15,17 +15,17 @@ import org.jboss.netty.handler.codec.http.HttpMethod
 object LazyStoreForeRouter extends Service[Request,Response]{
  val futurePool=ExecutorProvider.futurePool
   override def apply(request: Request): Future[Response] = {
-    val restRequest=RestRequest(request)
-    futurePool{
-      val routers=RouterController.filterRouter(restRequest)
-      val content=if(routers.isEmpty) {
-        throw new RestException(RestResponseInlineCode.no_such_method,"no such method find!")
+    futurePool {
+      val restRequest = RestRequest(request)
+      val routers = RouterController.filterRouter(restRequest)
+      val content = if (routers.isEmpty) {
+        throw new RestException(RestResponseInlineCode.no_such_method, s"[${request.getUri()}] No Such Method Find!")
       } else {
-        val router=routers.last
-        restRequest.regex=router._1._2
+        val router = routers.last
+        restRequest.regex = router._1._2
         router._2(restRequest)
       }
-      val response=Response()
+      val response = Response()
       response.setContent(Parser.ObjectToJsonStringToChannelBuffer(content))
       response
     }

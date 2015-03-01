@@ -7,6 +7,8 @@ import cn.changhong.lazystore.service.AppsRequest
 import cn.changhong.web.persistent.SlickDBPoolManager
 import cn.changhong.web.util.{RestResponseInlineCode, RestException}
 
+import scala.collection.mutable.ArrayBuffer
+import scala.io.Source
 import scala.slick.driver.MySQLDriver.simple._
 
 /**
@@ -69,7 +71,7 @@ object Appsdao {
   def searchSpeityApps(request: AppsRequest) ={
     val columns=request.columns match {
       case Some(s) => s"DISTINCT $c_lazystore_speitysort_index as sid,$s"
-      case None => s"DISTINCT $c_lazystore_speitysort_index as sid,*"
+      case None => throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Need Columns Label")// s"DISTINCT $c_lazystore_speitysort_index as sid,*"
     }
     val condition=request.condition match{
       case Some(s)=>s"$c_lazyapp_title like '%$s%'"
@@ -87,7 +89,7 @@ object Appsdao {
   def searchTopSaleApps(request: AppsRequest) = {
     val columns=request.columns match {
       case Some(s) => s"DISTINCT $c_lazystore_topsort_index as sid,$s"
-      case None => s"DISTINCT $c_lazystore_topsort_index as sid,*"
+      case None =>  throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Need Columns Label")//s"DISTINCT $c_lazystore_topsort_index as sid,*"
     }
     val condition=request.condition match{
       case Some(s)=>s"$c_lazyapp_title like '%$s%'"
@@ -103,7 +105,7 @@ object Appsdao {
   def searchTopHotApps(request: AppsRequest) ={
     val columns=request.columns match {
       case Some(s) => s"DISTINCT $c_lazystore_topsort_index as sid,$s"
-      case None => s"DISTINCT $c_lazystore_topsort_index as sid,*"
+      case None => throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Need Columns Label")//s"DISTINCT $c_lazystore_topsort_index as sid,*"
     }
     val condition=request.condition match{
       case Some(s)=>s"$c_lazyapp_title like '%$s%'"
@@ -120,7 +122,7 @@ object Appsdao {
   def searchNewApps(request:AppsRequest)= {
     val columns=request.columns match{
       case Some(s)=>s"DISTINCT $c_lazyapp_updatedate as sid,$s"
-      case None=>s"DISTINCT $c_lazyapp_updatedate as sid,*"
+      case None => throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Need Columns Label")//case None=>s"DISTINCT $c_lazyapp_updatedate as sid,*"
     }
     val condition=request.condition match{
       case Some(s)=>s"$c_lazyapp_title like '%$s%'"
@@ -137,7 +139,7 @@ object Appsdao {
   def searchSimilarApps(request:AppsRequest)={
     val columns=request.columns match {
       case Some(s) => s"$s,$c_lazystore_speitysort_index as sid"
-      case None => s"*,$c_lazystore_speitysort_index as sid"
+      case None => throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Need Columns Label")//case None => s"*,$c_lazystore_speitysort_index as sid"
     }
     val condition=request.condition match{
       case Some(s)=>s"lazyapp_title like '$s'"
@@ -151,7 +153,7 @@ object Appsdao {
       case Some(s)=>
         val columns=request.columns match{
           case Some(c)=>s"DISTINCT $c_lazystore_speitysort_index as sid,$c"
-          case None=>s"DISTINCT $c_lazystore_speitysort_index as sid,*"
+          case None => throw new RestException(RestResponseInlineCode.invalid_request_parameters,"Need Columns Label")//case None=>s"DISTINCT $c_lazystore_speitysort_index as sid,*"
         }
         val where=s"$c_lazyapp_title like '%$s%' or $c_apptags_appcategories_name like '%$s%'"
         val sql=s"select $columns from $V_LAZYAPP_APPPKG_TAGS where $where and $c_lazystore_speitysort_index > ${request.start} limit ${request.max}"
@@ -160,7 +162,6 @@ object Appsdao {
     }
   }
   def insertApps(lazyApps:Seq[LazyappRow]) ={
-
     try {
       SlickDBPoolManager.DBPool.withSession {implicit session=>
         Lazyapp.insertAll(lazyApps: _*)
@@ -178,4 +179,5 @@ object Appsdao {
       case ex:Exception=>throw new RestException(RestResponseInlineCode.db_executor_error,s"db executor error,${ex.getMessage}")
     }
   }
+  
 }

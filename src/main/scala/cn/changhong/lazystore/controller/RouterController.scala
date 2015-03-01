@@ -52,7 +52,6 @@ object RouterController {
   //添加App评论
   routers+=((HttpMethod.PUT->r_comment_url)->AppCommentPutAction)
 
-
   //创建设备信息
   routers+=((HttpMethod.PUT->r_device_url)->DevicePutAction)
   //上传设备端app的统计信息

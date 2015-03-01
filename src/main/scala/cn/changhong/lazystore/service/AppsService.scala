@@ -14,7 +14,7 @@ private[service] class AppGetService extends BaseService {
   override def apply(request: RestRequest): ResponseContent = {
     val appId=request.path.split("/").last
     val tasks=Seq( ExecutorProvider.futurePool{
-      Appsdao.getAppInfo(appId,AppsRequest(None,0,0))
+      Appsdao.getAppInfo(appId,AppsRequest(request))
     },ExecutorProvider.futurePool {
       Appsdao.getAppTags(appId)
     })

@@ -20,8 +20,6 @@ object AppsQueryAction extends RestAction[RestRequest,ResponseContent]{
       case LazyStoreRequestType.speity=>SpeityAppsService(request)
       case LazyStoreRequestType.top=>TopAppsService(request)
       case LazyStoreRequestType.hot=>HotApppsService(request)
-     // case LazyStoreRequestType.tag_speity=>TagSpeityAppsService(request)
-      //case LazyStoreRequestType.tag_top=>TagTopAppsService(request)
       case LazyStoreRequestType.New=>NewAppsService(request)
       case LazyStoreRequestType.similar=>SimilarAppsService(request)
       case LazyStoreRequestType.search=>SearchAppsService(request)
