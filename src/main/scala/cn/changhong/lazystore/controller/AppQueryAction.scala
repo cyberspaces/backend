@@ -13,7 +13,6 @@ object AppGetAction extends RestAction[RestRequest,ResponseContent]{
   override def apply(request: RestRequest): ResponseContent = AppGetService(request)
 }
 object AppsQueryAction extends RestAction[RestRequest,ResponseContent]{
-
   override def apply(request: RestRequest): ResponseContent = {
    val requestType=request.path.split("\\.").last
    requestType match{

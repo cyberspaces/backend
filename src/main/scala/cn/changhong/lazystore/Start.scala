@@ -21,15 +21,12 @@ object Start {
     GlobalConfigFactory.server_name=args(2)
     GlobalConfigFactory.redis_server_ip=args(3)
     GlobalConfigFactory.redis_server_port=args(4).toInt
-
     val service = AccessLogFilterService andThen ExceptionFilterService andThen SpiderActionInspectorFilterService andThen  TimeoutFilterService andThen LazyStoreForeRouter
     ServerBuilder()
       .codec(RichHttp[Request](Http()))
       .readTimeout(Duration(5,TimeUnit.SECONDS))
       .bindTo(new InetSocketAddress(GlobalConfigFactory.server_port))
       .name(GlobalConfigFactory.server_name)
-
       .build(service)
   }
-
 }
