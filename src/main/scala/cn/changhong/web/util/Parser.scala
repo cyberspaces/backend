@@ -19,7 +19,6 @@ trait Parser[T]{
   def apply(x:String):T
   def unapply(x:String):T=apply(x)
 }
-
 object Parser {
   implicit val jsonFormat=DefaultFormats
 

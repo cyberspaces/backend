@@ -498,7 +498,7 @@ object Tables {
    *  @param star Database column star DBType(TINYINT)
    *  @param liked Database column liked DBType(TINYINT)
    *  @param commentdate Database column commentdate DBType(BIGINT) */
-  case class UAppcommentsRow(var id: Long, apppkgId: Long, deviceId: Long, comment: String, star: Byte, liked: Byte, var commentdate: Long)
+  case class UAppcommentsRow(var id: Long= -1L, apppkgId: Long, deviceId: Long, comment: String, star: Byte, liked: Byte, var commentdate: Long)
   /** GetResult implicit for fetching UAppcommentsRow objects using plain SQL queries */
   implicit def GetResultUAppcommentsRow(implicit e0: GR[Long], e1: GR[String], e2: GR[Byte]): GR[UAppcommentsRow] = GR{
     prs => import prs._

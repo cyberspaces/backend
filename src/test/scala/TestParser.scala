@@ -4,7 +4,7 @@ import java.util
 import java.util.{UUID, Date}
 
 import cn.changhong.lazystore.persistent.T.Tables._
-import cn.changhong.lazystore.persistent.dao.{Appsdao, ClientDeviceDao, DeviceAppsStat}
+import cn.changhong.lazystore.persistent.dao.{DeviceApps, Appsdao, ClientDeviceDao, DeviceAppsStat}
 import cn.changhong.lazystore.service.AppsRequest
 import cn.changhong.web.persistent.SlickDBPoolManager
 import cn.changhong.web.util.{Parser, ExecutorProvider}
@@ -50,8 +50,14 @@ object TestParser {
     //      Thread.sleep(4000)
     //    }
     //  }
-     testGetAppInfo("2")
+//     testGetAppInfo("2")
+//    val jsonStr="{\"star\":5,\"apppkgId\":123456789,\"comment\":\"Very Good\",\"deviceId\":123456789,\"liked\":1,\"id\":-1,\"commentdate\":-1}"
+//    val comment=Parser.UAppcommentsParser(jsonStr)
+//    println(comment.apppkgId)
+//      case class UAppsRow(var id: Long, packagename: String, title: String, versioncode: String, var uDeviceId: Long, var updatetime: Long)
 
+    val obj=DeviceApps(System.currentTimeMillis(),Array(UAppsRow(-1,"PACJAGENAME","TITLE","VERSIONCODE",System.currentTimeMillis(),System.currentTimeMillis())))
+    println(Parser.ObjectToJsonString(obj))
   }
   def testGetAppInfo(appId:String): Unit ={
     val res=Seq( ExecutorProvider.futurePool {
