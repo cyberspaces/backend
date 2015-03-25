@@ -96,7 +96,7 @@ object Appsdao {
       case None=> "1=1"
     }
     val sql=request.tag match{
-      case Some(s)=>s"select $columns from $V_LAZYAPP_APPPKG_TAGS where $condition and $c_apptags_appcategories_name = '$s' and $c_lazystore_topsort_index > ${request.start} order by $c_apptags_weight desc limit ${request.max}}"
+      case Some(s)=>s"select $columns from $V_LAZYAPP_APPPKG_TAGS where $condition and $c_apptags_appcategories_name = '$s' and $c_lazystore_topsort_index > ${request.start} order by $c_apptags_weight desc limit ${request.max}"
       case None=>s"select $columns from $V_LAZYAPP_APPPKG where $condition and $c_lazystore_topsort_index > ${request.start} limit ${request.max}"
     }
     exec(sql)
@@ -112,7 +112,7 @@ object Appsdao {
       case None=> "1=1"
     }
     val sql=request.tag match{
-      case Some(s)=>s"select $columns from $V_LAZYAPP_APPPKG_TAGS where $condition and $c_apptags_appcategories_name = '$s' and $c_lazystore_hotsort_index > ${request.start} order by $c_apptags_weight desc limit ${request.max}}"
+      case Some(s)=>s"select $columns from $V_LAZYAPP_APPPKG_TAGS where $condition and $c_apptags_appcategories_name = '$s' and $c_lazystore_hotsort_index > ${request.start} order by $c_apptags_weight desc limit ${request.max}"
       case None=>s"select $columns from $V_LAZYAPP_APPPKG where $condition and $c_lazystore_hotsort_index > ${request.start} limit ${request.max}"
     }
     exec(sql)

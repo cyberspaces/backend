@@ -68,7 +68,7 @@ object UserCommentDao {
     }
     if(request.start <=0) request.start=new Date().getTime
     val apkid=request.condition match{
-      case Some(id)=>
+      case Some(id)=>id
       case None=>throw new RestException(RestResponseInlineCode.invalid_request_parameters,"无效的id")
     }
     val sql=s"select $columns from $T_UAPPCOMMENTS where $c_uappcomments_apppkg_id=$apkid and $c_uappcomments_commentDate < ${request.start} order by $c_uappcomments_commentDate desc limit ${request.max}"

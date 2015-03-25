@@ -44,16 +44,18 @@ object RouterController {
   //获取app分类列表
   routers+=((HttpMethod.GET->r_categories_url)->CategoryGetAction)
 
-
   //获取app相关的用户评论
   routers+=((HttpMethod.GET->r_comment_url)->AppCommentGetAction)
+
   //获取用户对app的评论星级
   routers+=((HttpMethod.GET->r_comment_star_url)->AppCommentStarGetAction)
+
   //添加App评论
   routers+=((HttpMethod.PUT->r_comment_url)->AppCommentPutAction)
 
   //创建设备信息
   routers+=((HttpMethod.PUT->r_device_url)->DevicePutAction)
+
   //上传设备端app的统计信息
   routers+=((HttpMethod.PUT->r_stats_url)->StatsPutAction)
 
