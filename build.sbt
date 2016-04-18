@@ -1,4 +1,5 @@
 import com.github.retronym.SbtOneJar._
+
 oneJarSettings
 
 name := "lazystore"
@@ -10,8 +11,6 @@ libraryDependencies += "com.twitter" % "finagle-http_2.10" % "6.22.0" withSource
 libraryDependencies += "com.twitter" % "util-core_2.10" % "6.22.0" withSources() withJavadoc()
 
 libraryDependencies += "com.twitter" % "finagle-core_2.10" % "6.22.0" withSources() withJavadoc()
-
-libraryDependencies += "io.netty" % "netty" % "3.9.4.final" withSources() withJavadoc()
 
 libraryDependencies += "net.liftweb" % "lift-json_2.10" % "3.0-M1" withSources() withJavadoc()
 
@@ -33,11 +32,14 @@ libraryDependencies += "redis.clients" % "jedis" % "2.6.1" withSources() withJav
 
 libraryDependencies += "org.apache.commons" % "commons-pool2" % "2.0" withSources() withJavadoc()
 
-libraryDependencies += "org.specs2" % "specs2_2.10" % "3.0-M2" withSources() withJavadoc()
-
 libraryDependencies += "org.mongodb" % "casbah_2.10" % "2.8.0-RC2"
 
 libraryDependencies += "nl.razko" %% "scraper" % "0.4.1" withSources() withJavadoc()
+
+resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+
+libraryDependencies += "org.specs2" % "specs2-core_2.10" % "3.4"
+
 
 
 

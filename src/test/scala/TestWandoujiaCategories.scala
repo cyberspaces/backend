@@ -1,23 +1,27 @@
 import java.util.Date
 
-import cn.changhong.lazystore.persistent.T.Tables.{AppcategoriesRow,Appcategories}
-import cn.changhong.lazystore.persistent.dao.{SlickResultInt, SlickResultMap}
-import cn.changhong.lazystore.splider.wandoujia.SpliderAllClassifed
-import cn.changhong.web.init.GlobalConfigFactory
-import cn.changhong.web.persistent.SlickDBPoolManager
-import cn.changhong.web.util.{ExecutorProvider, Parser}
+import backend.lazystore.persistent.T.Tables.{Appcategories, AppcategoriesRow}
+import backend.lazystore.persistent.dao.{SlickResultInt, SlickResultMap}
+import backend.lazystore.spider.wandoujia.SpliderAllClassifed
+import backend.base.init.GlobalConfigFactory
+import backend.base.persistent.SlickDBPoolManager
+import backend.base.util.{ExecutorProvider, Parser}
 import com.twitter.util.Future
 import org.slf4j.LoggerFactory
+import org.specs2.mutable.Specification
+
 import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.{StaticQuery => Q}
 import Q.interpolation
 import scala.collection.mutable.Map
 /**
- * Created by yangguo on 15-2-11.
+ * Created  on 15-2-11.
  */
-object TestWandoujiaCategories {
-  def main(args:Array[String]): Unit = {
+class TestWandoujiaCategoriesSpecs   extends Specification {
+  "ServiceConvariantDemoSpecs OK" >> {
     allWandoujiaCategories()
+
+    true
   }
   def allWandoujiaCategories()= {
     val creation = new Date().getTime()

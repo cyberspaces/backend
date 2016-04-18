@@ -1,24 +1,23 @@
 import java.io.ByteArrayOutputStream
 import java.net.URL
 import java.util
-import java.util.{UUID, Date}
+import java.util.{Date, UUID}
 
-import cn.changhong.lazystore.persistent.T.Tables._
-import cn.changhong.lazystore.persistent.dao.{DeviceApps, Appsdao, ClientDeviceDao, DeviceAppsStat}
-import cn.changhong.lazystore.service.AppsRequest
-import cn.changhong.web.persistent.SlickDBPoolManager
-import cn.changhong.web.util.{Parser, ExecutorProvider}
+import backend.lazystore.persistent.T.Tables._
+import backend.lazystore.persistent.dao.{Appsdao, ClientDeviceDao, DeviceApps, DeviceAppsStat}
+import backend.lazystore.service.AppsRequest
+import backend.base.persistent.SlickDBPoolManager
+import backend.base.util.{ExecutorProvider, Parser}
 import com.twitter.util.{Await, Future}
-
-
+import org.specs2.mutable.Specification
 import sun.net.www.protocol.http.HttpURLConnection
 
 /**
- * Created by yangguo on 15-2-4.
+ * Created  on 15-2-4.
  */
 case class AppInfo(app:String,tags:String)
-object TestParser {
-  def main(args:Array[String]): Unit = {
+class TestParser extends Specification {
+  "test" >> {
     //    val stats=(1 to 10).map{index=>
     //      UAppstatsRow("packagename"+index,new Date().getTime,index,index,index,index,index)
     //    }.toArray
@@ -58,6 +57,8 @@ object TestParser {
 
     val obj=DeviceApps(System.currentTimeMillis(),Array(UAppsRow(-1,"PACJAGENAME","TITLE","VERSIONCODE",System.currentTimeMillis(),System.currentTimeMillis())))
     println(Parser.ObjectToJsonString(obj))
+
+    true
   }
   def testGetAppInfo(appId:String): Unit ={
     val res=Seq( ExecutorProvider.futurePool {
