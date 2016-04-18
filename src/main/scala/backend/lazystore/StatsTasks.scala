@@ -6,7 +6,6 @@ import java.util.concurrent.{LinkedBlockingQueue, TimeUnit, ThreadPoolExecutor}
 
 import backend.lazystore.persistent.dao.{SlickResultMap, SlickResultInt, SlickResultString, SqlProvider}
 import backend.lazystore.util.ConfigManager
-import backend.lazystore.GlobalConfig
 import backend.base.persistent.SlickDBPoolManager
 
 import scala.slick.jdbc.{StaticQuery => Q}
