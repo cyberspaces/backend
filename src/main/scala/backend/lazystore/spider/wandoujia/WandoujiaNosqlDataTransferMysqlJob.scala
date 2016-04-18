@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.{AtomicInteger, AtomicLong}
 import backend.lazystore.persistent.T.Tables.{Appdev, AppdevRow, Apppkg, ApppkgRow, Apptags, ApptagsRow, Lazyapp, LazyappRow}
 import backend.lazystore.persistent.dao.SqlProvider
 import backend.lazystore.spider.demo.ErrorObtLog
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import backend.base.persistent.SlickDBPoolManager
 import backend.base.util.ExecutorProvider
 import com.mongodb.{BasicDBObject, DBObject, MongoClient}
@@ -37,7 +37,7 @@ object WandoujiaNosqlDataTransferMysqlJob {
   type tags=java.util.List[DBObject]
   type TransferBigApp=(apks,award,categories,developer,icons,latestapk,negComments,posComments,screenshots,stat,tags)
 
-  val error=LoggerFactory.getLogger(GlobalConfigFactory.global_log_request_error_name)
+  val error=LoggerFactory.getLogger(GlobalConfig.global_log_request_error_name)
   val map:Map[String,Int]=Map()
 
   val speityIndex=new AtomicInteger(1)

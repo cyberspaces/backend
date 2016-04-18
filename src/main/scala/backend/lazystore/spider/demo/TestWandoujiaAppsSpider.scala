@@ -1,6 +1,6 @@
 package backend.lazystore.spider.demo
 
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import org.specs2.mutable.Specification
 
 /**

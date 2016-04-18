@@ -2,7 +2,7 @@ package backend.base.util
 
 import java.util.UUID
 
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import backend.base.persistent.RedisPoolManager
 import com.twitter.finagle.http.Request
 import org.slf4j.LoggerFactory
@@ -27,13 +27,13 @@ object TokenUtil extends TokenManager{
     RedisPoolManager.redisCommand{implicit client=>
       val key=requestClientKey
       val count=client.incr(key)
-      println(GlobalConfigFactory.server_name+" <--count-- "+requestClientKey+' '+count)
-      if(count>=GlobalConfigFactory.max_valid_request_frequency) {
-        if(count==GlobalConfigFactory.exceed_spider_threshold_frequency) client.expire(key,GlobalConfigFactory.exceed_spider_threshold_seconds)
-        else if(count==GlobalConfigFactory.max_valid_request_frequency) client.expire(key,GlobalConfigFactory.may_spider_sleep_seconds)
+      println(GlobalConfig.server_name+" <--count-- "+requestClientKey+' '+count)
+      if(count>=GlobalConfig.max_valid_request_frequency) {
+        if(count==GlobalConfig.exceed_spider_threshold_frequency) client.expire(key,GlobalConfig.exceed_spider_threshold_seconds)
+        else if(count==GlobalConfig.max_valid_request_frequency) client.expire(key,GlobalConfig.may_spider_sleep_seconds)
         true
       }else {
-        if(count == 1) client.expire(key,GlobalConfigFactory.max_valid_request_expire_seconds)
+        if(count == 1) client.expire(key,GlobalConfig.max_valid_request_expire_seconds)
         false
       }
     }

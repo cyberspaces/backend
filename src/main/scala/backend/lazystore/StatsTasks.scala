@@ -6,7 +6,7 @@ import java.util.concurrent.{LinkedBlockingQueue, TimeUnit, ThreadPoolExecutor}
 
 import backend.lazystore.persistent.dao.{SlickResultMap, SlickResultInt, SlickResultString, SqlProvider}
 import backend.lazystore.util.ConfigManager
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import backend.base.persistent.SlickDBPoolManager
 
 import scala.slick.jdbc.{StaticQuery => Q}
@@ -44,16 +44,16 @@ class StatsTasks {
 }
 object StatsTasks{
   private def initConfig()={
-    GlobalConfigFactory.server_ip = ConfigManager("lazystore.server.host")
-    GlobalConfigFactory.server_port = ConfigManager("lazystore.server.port").toInt//args(1).toInt
-    GlobalConfigFactory.server_name = ConfigManager("lazystore.server.name")
-    GlobalConfigFactory.redis_server_ip = ConfigManager("lazystore.cache.redis.host")
-    GlobalConfigFactory.redis_server_port = ConfigManager("lazystore.cache.redis.port").toInt
-    GlobalConfigFactory.db_server_ip = ConfigManager("lazystore.database.mysql.host")
-    GlobalConfigFactory.db_server_port = ConfigManager("lazystore.database.mysql.port").toInt
-    GlobalConfigFactory.db_server_username=ConfigManager("lazystore.database.mysql.username")
-    GlobalConfigFactory.db_server_password=ConfigManager("lazystore.database.mysql.password")
-    GlobalConfigFactory.db_server_db_name=ConfigManager("lazystore.database.mysql.db.name")
+    GlobalConfig.server_ip = ConfigManager("lazystore.server.host")
+    GlobalConfig.server_port = ConfigManager("lazystore.server.port").toInt//args(1).toInt
+    GlobalConfig.server_name = ConfigManager("lazystore.server.name")
+    GlobalConfig.redis_server_ip = ConfigManager("lazystore.cache.redis.host")
+    GlobalConfig.redis_server_port = ConfigManager("lazystore.cache.redis.port").toInt
+    GlobalConfig.db_server_ip = ConfigManager("lazystore.database.mysql.host")
+    GlobalConfig.db_server_port = ConfigManager("lazystore.database.mysql.port").toInt
+    GlobalConfig.db_server_username=ConfigManager("lazystore.database.mysql.username")
+    GlobalConfig.db_server_password=ConfigManager("lazystore.database.mysql.password")
+    GlobalConfig.db_server_db_name=ConfigManager("lazystore.database.mysql.db.name")
   }
   type Year=Int
   type Month=Int

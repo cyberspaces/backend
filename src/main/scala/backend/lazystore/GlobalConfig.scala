@@ -1,6 +1,5 @@
-package backend.base.init
+package backend.lazystore
 
-import java.util.Properties
 import java.util.concurrent.TimeUnit
 
 import com.twitter.util.Duration
@@ -9,7 +8,7 @@ import com.twitter.util.Duration
  *  14-12-10.
  */
 
-object GlobalConfigFactory {
+object GlobalConfig {
 //  var properties:Properties=null
 
   var db_driver=""

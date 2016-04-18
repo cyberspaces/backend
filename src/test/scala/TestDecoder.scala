@@ -2,7 +2,6 @@ import java.net.InetSocketAddress
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
-import backend.base.init.GlobalConfigFactory
 import backend.base.util.Parser
 import com.twitter.finagle.builder.ServerBuilder
 import com.twitter.finagle.http.{Http, Request, Response, RichHttp}

@@ -4,7 +4,7 @@ import java.io._
 import java.net.{HttpURLConnection, URL}
 import java.util.concurrent.{FutureTask, Callable, Future, Executors}
 
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import org.jsoup.Jsoup
 
 import scala.collection.JavaConverters._

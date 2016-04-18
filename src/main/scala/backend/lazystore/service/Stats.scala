@@ -9,7 +9,7 @@ import backend.base.util.{Parser, ResponseContent, RestRequest}
  */
 package Stats {
 
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import com.twitter.util.Future
 import org.slf4j.LoggerFactory
 
@@ -77,7 +77,7 @@ object StatsErrorApkDownloadInfoAction extends RestAction[RestRequest, ResponseC
 object StatsErrorApkDownloadInfo extends StatsErrorApkDownloadInfo with BaseAopService
 
 class StatsErrorApkDownloadInfo extends BaseService {
-  lazy val statsLog=LoggerFactory.getLogger(GlobalConfigFactory.global_log_request_stats_error_name)
+  lazy val statsLog=LoggerFactory.getLogger(GlobalConfig.global_log_request_stats_error_name)
   override def apply(request: RestRequest): ResponseContent = {
     val body = Parser.ChannelBufferToString(request.underlying.getContent)
     statsLog.info(body)

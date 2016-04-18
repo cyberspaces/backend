@@ -2,7 +2,7 @@ package backend.base.persistent
 
 import java.util.UUID
 
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import backend.base.util.TokenUtil
 import redis.clients.jedis.{JedisPool, JedisPoolConfig,Jedis}
 
@@ -16,7 +16,7 @@ object RedisPoolManager{
     config.setMaxIdle(5)
     config.setMaxWaitMillis(1000*10)
     config.setTestOnBorrow(true)
-    new JedisPool(config,GlobalConfigFactory.redis_server_ip,GlobalConfigFactory.redis_server_port,3000,"Kksebo",10)
+    new JedisPool(config,GlobalConfig.redis_server_ip,GlobalConfig.redis_server_port,3000,"Kksebo",10)
 }
   def redisCommand[T](f:Jedis=>T): T ={
     val client=redisPool.getResource

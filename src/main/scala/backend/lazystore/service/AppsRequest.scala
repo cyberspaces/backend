@@ -1,7 +1,7 @@
 package backend.lazystore.service
 
 import backend.lazystore.util.Util
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import backend.base.util.{RestException, RestRequest, RestRespCode}
 
 /**
@@ -34,7 +34,7 @@ object AppsRequest {
         } catch {
           case ex:Throwable => throw new RestException(RestRespCode.invalid_request_parameters, s"传入参数m=${temp.get(0)}不为数值类型")
         }
-      else GlobalConfigFactory.default_apps_count
+      else GlobalConfig.default_apps_count
 
     temp = request.urlParams.all.get(Util.request_key_params)
     val condition =

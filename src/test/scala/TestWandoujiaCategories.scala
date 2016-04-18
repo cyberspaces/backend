@@ -3,7 +3,6 @@ import java.util.Date
 import backend.lazystore.persistent.T.Tables.{Appcategories, AppcategoriesRow}
 import backend.lazystore.persistent.dao.{SlickResultInt, SlickResultMap}
 import backend.lazystore.spider.wandoujia.SpliderAllClassifed
-import backend.base.init.GlobalConfigFactory
 import backend.base.persistent.SlickDBPoolManager
 import backend.base.util.{ExecutorProvider, Parser}
 import com.twitter.util.Future

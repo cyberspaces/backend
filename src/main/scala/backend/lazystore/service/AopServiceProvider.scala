@@ -1,6 +1,6 @@
 package backend.lazystore.service
 
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import backend.base.util._
 import org.slf4j.LoggerFactory
 
@@ -11,7 +11,7 @@ trait BaseService{
   def apply(request:RestRequest):ResponseContent
 }
 trait LogService extends BaseService{
-  val log=LoggerFactory.getLogger(GlobalConfigFactory.log_user_name)
+  val log=LoggerFactory.getLogger(GlobalConfig.log_user_name)
   abstract override def apply(request:RestRequest):ResponseContent={
     log.info(createLog(request))
     super.apply(request)

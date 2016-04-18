@@ -7,7 +7,7 @@ import java.util.concurrent.{Executors}
 import backend.lazystore.util.Util
 import backend.base.controller.ForeFamilyMemberAction
 import backend.base.controller.auth.ForeAuthAction
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import backend.base.util._
 import com.twitter.finagle.http.{Response, Request}
 import com.twitter.finagle.{ Service, SimpleFilter}
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory
   *
   */
 object SpiderActionInspectorFilterService extends SimpleFilter[Request,Response]{
-  val logFactory=LoggerFactory.getLogger(GlobalConfigFactory.global_log_request_spider_name)
+  val logFactory=LoggerFactory.getLogger(GlobalConfig.global_log_request_spider_name)
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     val remote=Util.getRealClientIp(request)
     if(TokenUtil.validateIsHackAction(remote)){
@@ -38,7 +38,7 @@ object SpiderActionInspectorFilterService extends SimpleFilter[Request,Response]
   * 异常捕捉
   */
 object ExceptionFilterService extends SimpleFilter[Request,Response]{
-  val errorLog=LoggerFactory.getLogger(GlobalConfigFactory.global_log_request_error_name)
+  val errorLog=LoggerFactory.getLogger(GlobalConfig.global_log_request_error_name)
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     service(request) handle {
       case ex: RestException =>
@@ -61,13 +61,13 @@ object ExceptionFilterService extends SimpleFilter[Request,Response]{
   * 设置日志
   */
 object AccessLogFilterService extends SimpleFilter[Request,Response]{
-  lazy val requestLog=LoggerFactory.getLogger(GlobalConfigFactory.global_log_request_access_name)
+  lazy val requestLog=LoggerFactory.getLogger(GlobalConfig.global_log_request_access_name)
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
     createRequestLog(request)
     service.apply(request)
   }
   def createRequestLog(request:Request): Unit ={
-    println(GlobalConfigFactory.server_name+" <--req-- "+request.getUri())
+    println(GlobalConfig.server_name+" <--req-- "+request.getUri())
     val tracker_id=UUID.randomUUID().toString
     request.headers().set("Tracker_Id",tracker_id)
     val value=TrackerInfo(request)
@@ -81,7 +81,7 @@ object AccessLogFilterService extends SimpleFilter[Request,Response]{
 object TimeoutFilterService extends SimpleFilter[Request,Response]{
   implicit val javaTime=new JavaTimer()
   override def apply(request: Request, service: Service[Request, Response]): Future[Response] = {
-    service(request) within(GlobalConfigFactory.global_response_timeout)
+    service(request) within(GlobalConfig.global_response_timeout)
   }
 }
 
@@ -110,6 +110,6 @@ object ForeRouter extends Service[Request,Response]{
   */
 object TrackerInfo{
   def apply(request:Request):Map[String,String]={
-    Map("ip"->request.remoteHost,"method"->request.getMethod().getName,"url"->request.getUri(),"server_name"->GlobalConfigFactory.server_name,"tracker_id"->request.headers().get("Tracker_Id"))
+    Map("ip"->request.remoteHost,"method"->request.getMethod().getName,"url"->request.getUri(),"server_name"->GlobalConfig.server_name,"tracker_id"->request.headers().get("Tracker_Id"))
   }
 }

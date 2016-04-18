@@ -1,6 +1,6 @@
 package backend.lazystore.persistent.dao
 
-import backend.base.init.GlobalConfigFactory
+import backend.lazystore.GlobalConfig
 import backend.base.persistent.SlickDBPoolManager
 import backend.base.util.{RestException, RestRespCode}
 import org.apache.commons.lang.StringEscapeUtils
@@ -16,7 +16,7 @@ object SqlProvider {
   def exec(sql:String)={
     try{
       val start=System.currentTimeMillis()
-      println(GlobalConfigFactory.server_name +" <--sql-- "+ sql)
+      println(GlobalConfig.server_name +" <--sql-- "+ sql)
       val  res=SlickDBPoolManager.DBPool.withSession{implicit session=>
         sql"#$sql".as(SlickResultMap).list
       }
